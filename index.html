@@ -3,156 +3,187 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10251e">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1b5e20">
+  <meta name="description" content="40 Days of Silence: a personal journey of reflection, self-respect, and intentional growth.">
   <title>40 Days of Silence</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <main class="app">
-    <header class="hero">
-      <p class="eyebrow">A PERSONAL JOURNEY</p>
-      <h1>40 Days of <em>Silence</em></h1>
-      <p class="subtitle">Step away from the noise. Return to what matters.</p>
-    </header>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="40 Days of Silence home">
+      <span class="brand-mark">40</span>
+      <span>
+        <strong>40 Days of Silence</strong>
+        <small>Be still. Listen deeply. Live intentionally.</small>
+      </span>
+    </a>
+    <span class="private-label"><span class="status-dot"></span> Your private space</span>
+  </header>
 
-    <section class="panel progress-panel">
-      <div class="between">
-        <strong id="dayLabel">DAY 1 OF 40</strong>
-        <span id="progressPercent">3%</span>
-      </div>
-      <div class="progress-track">
-        <div id="journeyProgress" class="progress-fill"></div>
+  <main class="page">
+    <section class="welcome">
+      <p class="eyebrow">A JOURNEY BACK TO YOURSELF</p>
+      <h1>Your worth was never<br class="desktop-break"> theirs to decide.</h1>
+      <p class="intro">
+        You do not need to answer every opinion, carry every judgment,
+        or prove your value to everyone. Be present with the person you are becoming.
+      </p>
+      <div class="belief">
+        <span class="belief-symbol" aria-hidden="true">✳</span>
+        <p><strong>Remember this:</strong> Their noise does not define your growth.
+          Your values, choices, and actions are yours to shape.</p>
       </div>
     </section>
 
-    <section class="panel daily-card">
-      <div class="photo-wrap">
-        <img id="dailyPhoto" alt="A peaceful landscape for reflection">
-        <div id="photoFallback" class="photo-fallback">
-          <span class="fallback-star">✦</span>
-          <strong>Make room for stillness.</strong>
-          <span>Connect to the internet to load the photograph.</span>
+    <section class="journey-panel" aria-label="Your 40-day journey">
+      <div>
+        <p class="eyebrow">YOUR JOURNEY</p>
+        <h2 id="day-heading">Day 1 of 40</h2>
+        <p id="date-label" class="muted"></p>
+      </div>
+      <div class="journey-progress">
+        <div class="progress-track">
+          <div id="journey-progress-bar" class="progress-fill"></div>
         </div>
-        <a id="photoLink" class="photo-link" href="#" target="_blank"
-           rel="noopener noreferrer" hidden>Open photograph ↗</a>
-      </div>
-
-      <div class="daily-copy">
-        <p class="eyebrow gold">TODAY'S THOUGHT</p>
-        <blockquote id="dailyQuote"></blockquote>
-        <div class="rule"></div>
-        <p class="eyebrow">YOUR QUESTION FOR TODAY</p>
-        <p id="dailyQuestion" class="question"></p>
+        <p id="journey-progress-label">0% of your journey</p>
       </div>
     </section>
 
-    <section class="section">
-      <p class="eyebrow">THREE MOMENTS OF RETURN</p>
-      <div class="moments">
-        <article class="moment">
-          <span class="time">6:30 AM</span>
-          <h3>Begin quietly</h3>
-          <p>What deserves my attention today?</p>
-        </article>
-        <article class="moment">
-          <span class="time">1:30 PM</span>
-          <h3>Pause and notice</h3>
-          <p>Am I reacting automatically or choosing my response?</p>
-        </article>
-        <article class="moment">
-          <span class="time">8:30 PM</span>
-          <h3>Close with honesty</h3>
-          <p>What did I learn about myself today?</p>
-        </article>
-      </div>
-      <p class="small-note">These are reflection reminders displayed in the app, not automatic phone notifications.</p>
-    </section>
-
-    <section class="panel section journal">
-      <p class="eyebrow">MY PRIVATE JOURNAL</p>
-      <label for="journalEntry">What is on my mind today?</label>
-      <textarea id="journalEntry" rows="5"
-        placeholder="Write honestly. You do not need to impress anyone here."></textarea>
-      <div class="between journal-footer">
-        <span id="journalStatus" class="small-note">Saved on this device only.</span>
-        <button id="saveJournal" class="button secondary">Save journal</button>
-      </div>
-    </section>
-
-    <section class="panel section assessment">
+    <section class="session-section">
       <div class="section-heading">
         <div>
-          <p class="eyebrow gold">HONESTY, NOT PERFECTION</p>
-          <h2>My Behaviour Today</h2>
-          <p class="muted">Score each area from 0 to 5.</p>
+          <p class="eyebrow">THREE MOMENTS, ONE JOURNEY</p>
+          <h2>Make room for yourself</h2>
         </div>
-        <div class="daily-total">
-          <span>DAILY SCORE</span>
-          <strong><span id="dailyScore">0</span><small>/30</small></strong>
-        </div>
+        <button id="today-button" class="text-button" type="button">Return to today ↗</button>
       </div>
 
-      <div id="scoreCategories"></div>
-
-      <div class="total-track">
-        <div id="scoreProgress" class="progress-fill"></div>
+      <div class="session-tabs" role="group" aria-label="Choose a reflection session">
+        <button class="session-tab" data-session="morning" type="button">
+          <span class="tab-icon">☀</span>
+          <span><strong>Morning</strong><small>6:30 AM</small></span>
+          <span class="tab-status" id="status-morning">○</span>
+        </button>
+        <button class="session-tab" data-session="afternoon" type="button">
+          <span class="tab-icon">◷</span>
+          <span><strong>Afternoon</strong><small>1:30 PM</small></span>
+          <span class="tab-status" id="status-afternoon">○</span>
+        </button>
+        <button class="session-tab" data-session="evening" type="button">
+          <span class="tab-icon">☾</span>
+          <span><strong>Evening</strong><small>8:30 PM</small></span>
+          <span class="tab-status" id="status-evening">○</span>
+        </button>
       </div>
-      <p id="scoreMessage" class="score-message">Complete your assessment at the end of the day.</p>
-
-      <div class="scale-help">
-        <strong>How to score yourself</strong>
-        <p><b>0</b> Not practised · <b>1</b> Very difficult · <b>2</b> Inconsistent</p>
-        <p><b>3</b> Mixed results · <b>4</b> Consistent · <b>5</b> Intentional practice</p>
-      </div>
-
-      <div class="reflection-box">
-        <label for="assessmentReflection">What did I do well today, and what should I improve tomorrow?</label>
-        <textarea id="assessmentReflection" rows="4"
-          placeholder="One thing I handled well... One thing I will improve..."></textarea>
-        <div class="between journal-footer">
-          <span id="assessmentStatus" class="small-note">Not assessed yet.</span>
-          <button id="saveAssessment" class="button primary">Save assessment</button>
-        </div>
-      </div>
-
-      <button id="resetAssessment" class="button danger">Reset this day's assessment</button>
-      <p class="small-note">A low score is information, not a verdict on your worth. Speaking up when needed is part of self-control.</p>
     </section>
 
-    <section class="panel section dashboard">
-      <p class="eyebrow gold">THE BIGGER PICTURE</p>
-      <h2>My Growth Over 40 Days</h2>
-      <p class="muted">Only days you have assessed count toward the statistics.</p>
+    <section id="reflection-card" class="reflection-card">
+      <div id="reflection-form-view">
+        <div class="reflection-topline">
+          <span class="session-label" id="session-label">MORNING REFLECTION</span>
+          <span id="entry-state" class="entry-state">Your time</span>
+        </div>
+
+        <h2 id="reflection-title">Begin with yourself.</h2>
+        <p id="reflection-prompt" class="reflection-prompt">
+          Before the world asks anything of you, take a moment to notice what is happening within you.
+        </p>
+
+        <div class="quote">
+          <span aria-hidden="true">“</span>
+          <p id="daily-quote">You do not have to be understood by everyone to live a meaningful life.</p>
+        </div>
+
+        <form id="reflection-form">
+          <label for="reflection-input" id="journal-label">What do you want to remember about yourself today?</label>
+          <textarea id="reflection-input" rows="6" maxlength="5000"
+            placeholder="Write honestly. This space is for you, not for an audience."
+            required></textarea>
+          <div class="form-footer">
+            <span class="privacy-note">Saved privately in this browser</span>
+            <button id="complete-button" class="primary-button" type="submit">Complete reflection <span>→</span></button>
+          </div>
+        </form>
+      </div>
+
+      <div id="waiting-view" class="waiting-view" hidden>
+        <div class="success-symbol" aria-hidden="true">✓</div>
+        <p class="eyebrow">YOU SHOWED UP FOR YOURSELF</p>
+        <h2>Well done.</h2>
+        <p class="waiting-message">You made space to listen to yourself. You do not need to prove anything to anyone in this moment.</p>
+
+        <div class="landscape" role="img" aria-label="A peaceful landscape with mountains, a rising or setting sun, and a still lake">
+          <div class="sun"></div>
+          <div class="mountain mountain-back"></div>
+          <div class="mountain mountain-front"></div>
+          <div class="lake"></div>
+          <div class="lake-light"></div>
+        </div>
+
+        <p class="eyebrow countdown-label">UNTIL YOUR NEXT REFLECTION</p>
+        <div class="countdown" aria-label="Countdown to the next reflection">
+          <div><strong id="count-hours">00</strong><span>Hours</span></div>
+          <div><strong id="count-minutes">00</strong><span>Minutes</span></div>
+          <div><strong id="count-seconds">00</strong><span>Seconds</span></div>
+        </div>
+        <p id="next-session-label" class="muted"></p>
+        <button id="review-button" class="secondary-button" type="button">Review my reflection</button>
+      </div>
+    </section>
+
+    <section class="progress-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PROGRESS, NOT PERFECTION</p>
+          <h2>Look how far you have come</h2>
+        </div>
+      </div>
 
       <div class="stats-grid">
-        <article class="stat"><span>Days assessed</span><strong id="daysAssessed">0/40</strong></article>
-        <article class="stat"><span>Points earned</span><strong id="pointsEarned">0</strong></article>
-        <article class="stat"><span>Possible points</span><strong id="pointsPossible">0</strong></article>
-        <article class="stat"><span>Average score</span><strong id="averageScore">—</strong></article>
-        <article class="stat"><span>Highest day</span><strong id="highestDay">—</strong></article>
-        <article class="stat"><span>Lowest day</span><strong id="lowestDay">—</strong></article>
+        <article class="stat-card">
+          <span class="stat-icon">✧</span>
+          <strong id="completed-sessions">0 / 120</strong>
+          <span>Sessions completed</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">◷</span>
+          <strong id="completed-days">0 / 40</strong>
+          <span>Days with all 3 sessions</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">♡</span>
+          <strong id="journey-days">Day 1</strong>
+          <span>Where you are today</span>
+        </article>
       </div>
 
-      <h3 class="chart-heading">Daily scores</h3>
-      <div id="scoreChart" class="score-chart" aria-label="Chart of daily assessment scores"></div>
-      <p class="small-note">Empty bars mean no assessment has been saved for that day.</p>
-
-      <button id="exportData" class="button secondary full-button">Export my 40-day journey</button>
+      <div class="history-panel">
+        <div class="history-heading">
+          <div>
+            <h3>Your reflection journal</h3>
+            <p class="muted">Return to an earlier day when you need perspective.</p>
+          </div>
+          <button id="export-button" class="secondary-button" type="button">Export journal ↓</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </div>
     </section>
 
-    <nav class="navigation" aria-label="Day navigation">
-      <button id="previousDay" class="button secondary">← Previous</button>
-      <button id="todayButton" class="button primary">Today</button>
-      <button id="nextDay" class="button secondary">Next →</button>
-    </nav>
-
-    <footer>
-      <p>Silence is intentional, not disappearance. Keep your responsibilities, care for your people, and speak when it matters.</p>
-      <p class="small-note">Your journal and scores are stored in this browser on this device. They are not backed up to the cloud.</p>
-    </footer>
+    <section class="closing-note">
+      <span aria-hidden="true">✳</span>
+      <p>You can be kind without seeking approval. You can be quiet without disappearing. You can grow without announcing it.</p>
+      <strong>Your life is not a performance.</strong>
+    </section>
   </main>
 
-  <script src="script.js"></script>
+  <footer class="footer">
+    <p>40 Days of Silence · A personal practice, not a performance.</p>
+    <p>Your reflections stay in this browser unless you export them.</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
+

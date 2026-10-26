@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ebe7df">
+  <title>40 Days of Silence</title>
+  <style>
+:root {
+  --paper: #ebe7df;
+  --ink: #221f1b;
+  --soft: #6e685e;
+  --line: #cdc6b9;
+  --stone: #d8d1c4;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Noto Serif", serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.wrap { max-width: 34rem; margin: 0 auto; padding-bottom: 4rem; }
+
+h1, h2, p, blockquote, figure, ol { margin: 0; padding: 0; }
+
+/* ---------- top ---------- */
+.top { padding: 1.75rem 1.5rem 1.1rem; }
+.name { color: var(--soft); font-size: 0.9rem; }
+h1 { font-size: 2rem; font-weight: 400; line-height: 1.2; margin-top: 0.15rem; letter-spacing: -0.005em; }
+.date { color: var(--soft); font-size: 0.95rem; }
+.back { display: inline-block; margin-top: 0.5rem; color: var(--ink); font-size: 0.95rem; padding: 0.4rem 0; }
+
+/* ---------- progress ---------- */
+.progress { height: 2px; background: var(--line); margin: 0 1.5rem 1.25rem; }
+.progress i { display: block; height: 100%; background: var(--ink); width: 0; }
+
+/* ---------- photograph ---------- */
+.photo { aspect-ratio: 4 / 5; max-height: 74vh; width: 100%; background: var(--stone); overflow: hidden; position: relative; }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-fallback {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 2rem; color: var(--soft); font-size: 0.95rem;
+  background: linear-gradient(170deg, #ddd6c9, #cfc7b8);
+}
+[hidden] { display: none !important; }
+
+/* ---------- quote ---------- */
+.quote { padding: 2.25rem 1.5rem 0; }
+.quote p { font-size: 1.7rem; line-height: 1.32; letter-spacing: -0.005em; }
+.quote footer { margin-top: 0.9rem; color: var(--soft); font-size: 0.92rem; }
+
+/* ---------- blocks ---------- */
+.block { margin: 2.5rem 1.5rem 0; padding-top: 1.15rem; border-top: 1px solid var(--line); }
+h2 { font-size: 0.95rem; font-weight: 400; color: var(--soft); margin-bottom: 0.6rem; }
+.question { font-size: 1.25rem; line-height: 1.5; }
+
+.moments { list-style: none; }
+.moments li { padding: 0.15rem 0 0.15rem 0.9rem; margin-bottom: 1.1rem; border-left: 2px solid transparent; }
+.moments li.now { border-left-color: var(--ink); }
+.m-head { font-size: 1rem; }
+.m-prompt { color: var(--soft); font-size: 0.98rem; line-height: 1.55; }
+.moments li.now .m-prompt { color: var(--ink); }
+
+/* ---------- journal ---------- */
+textarea {
+  width: 100%; min-height: 9rem; resize: vertical;
+  background: transparent; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 2px;
+  padding: 0.9rem; font: inherit; font-size: 1.05rem; line-height: 1.6;
+}
+textarea::placeholder { color: #8f897d; }
+textarea:focus-visible, button:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--ink); outline-offset: 2px;
+}
+.status { color: var(--soft); font-size: 0.85rem; margin-top: 0.4rem; }
+
+/* ---------- all days ---------- */
+.days { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.35rem; }
+.daybtn {
+  min-height: 2.75rem; font: inherit; font-size: 0.9rem; color: var(--ink);
+  background: transparent; border: 1px solid var(--line); border-radius: 2px; cursor: pointer; padding: 0;
+}
+.daybtn.written { border-color: var(--soft); }
+.daybtn.today { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.daybtn.viewing:not(.today) { outline: 2px solid var(--ink); outline-offset: 1px; }
+.daybtn:disabled { opacity: 0.35; cursor: default; }
+
+/* ---------- about ---------- */
+.about summary { cursor: pointer; color: var(--soft); font-size: 0.95rem; padding: 0.4rem 0; }
+.about p { font-size: 0.95rem; color: var(--soft); margin-top: 0.8rem; }
+.linkbtn {
+  margin-top: 0.8rem; font: inherit; font-size: 0.95rem; color: var(--ink);
+  background: none; border: 0; padding: 0.5rem 0; text-decoration: underline; cursor: pointer;
+}
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- before the start date ---------- */
+.waiting-note { display: none; padding: 30vh 1.5rem 0; font-size: 1.5rem; line-height: 1.4; }
+body.waiting .waiting-note { display: block; }
+body.waiting .journey { display: none; }
+
+@media (min-width: 600px) {
+  .photo { border-radius: 2px; margin-top: 0; }
+  .wrap { padding-top: 1rem; }
+}
+</style>
+</head>
+<body>
+  <main class="wrap">
+
+    <p id="waiting" class="waiting-note"></p>
+
+    <div class="journey">
+      <header class="top">
+        <p class="name">40 Days of Silence</p>
+        <h1 id="dayLabel">Day 1 of 40</h1>
+        <p id="dateLabel" class="date"></p>
+        <a id="backToToday" class="back" href="#" hidden>Back to today</a>
+      </header>
+
+      <div id="progress" class="progress" role="progressbar" aria-label="Journey progress" aria-valuemin="0" aria-valuemax="40" aria-valuenow="1">
+        <i id="progressFill"></i>
+      </div>
+
+      <figure class="photo">
+        <img id="photo" alt="">
+        <div id="photoFallback" class="photo-fallback" hidden></div>
+      </figure>
+
+      <blockquote class="quote">
+        <p id="quote"></p>
+        <footer id="author"></footer>
+      </blockquote>
+
+      <section class="block" aria-labelledby="qh">
+        <h2 id="qh">Today's question</h2>
+        <p id="question" class="question"></p>
+      </section>
+
+      <section class="block" aria-labelledby="mh">
+        <h2 id="mh">Three moments</h2>
+        <ol id="moments" class="moments"></ol>
+      </section>
+
+      <section class="block" aria-labelledby="jh">
+        <h2 id="jh">Your thoughts</h2>
+        <label for="journal" class="sr">Write a few thoughts for this day</label>
+        <textarea id="journal" rows="7" placeholder="Write a few honest lines. No one reads this but you."></textarea>
+        <p id="saveStatus" class="status"></p>
+      </section>
+
+      <section class="block" aria-labelledby="dh">
+        <h2 id="dh">All days</h2>
+        <div id="daysGrid" class="days"></div>
+      </section>
+
+      <details class="block about">
+        <summary>About this page</summary>
+        <p>This is a simple web page. It cannot send you reminders at 6:30 AM, 1:30 PM or 8:30 PM when it is closed, and it cannot change your lock-screen wallpaper. Set phone alarms for those times if you want a nudge.</p>
+        <p>Your writing is saved only in this browser on this device, under this exact web address. Clearing the browser's data, or opening the page from a different address, will hide or erase it. Use the button below now and then to keep a copy.</p>
+        <button id="exportBtn" type="button" class="linkbtn">Download my entries as a text file</button>
+      </details>
+    </div>
+
+  </main>
+  <script>
+/* =====================================================================
+   40 DAYS OF SILENCE
+   ===================================================================== */
+
+/* ---------- 1. SETTINGS: the only things you need to edit ------------ */
+
+// The first day of your journey, written as YYYY-MM-DD.
+// Day 1 is this date. Day 40 is 39 days later.
+const START_DATE = "2026-10-26";
+
+// The folder that holds your photographs (next to index.html).
+const IMAGE_FOLDER = "IMAGES/";
+
+// ---- YOUR PHOTOGRAPHS ------------------------------------------------
+// Each entry can be a filename in the IMAGES folder, OR a full web link
+// beginning with https:// (links can stop working if the website removes them).
+// If the list is empty or a photo is missing, a quiet colour field is shown.
+// Type the exact filename of each photograph, including the extension.
+// Spelling and capital letters must match exactly (Photo1.JPG is not photo1.jpg).
+// The order matters: photo 1 is used on Day 1, photo 2 on Day 2, and so on.
+// With 19 photographs, the list starts again on Day 20, so
+// Day 1, 20 and 39 share photo 1, and Day 2, 21 and 40 share photo 2.
+// Put the photographs you love most in positions 1 and 2.
+const PHOTOS = [
+  "photo01.jpg",
+  "photo02.jpg",
+  "photo03.jpg",
+  "photo04.jpg",
+  "photo05.jpg",
+  "photo06.jpg",
+  "photo07.jpg",
+  "photo08.jpg",
+  "photo09.jpg",
+  "photo10.jpeg",
+  "photo11.jpeg",
+  "photo12.jpeg",
+  "photo13.jpeg",
+  "photo14.jpeg",
+  "photo15.jpeg",
+  "photo16.jpeg",
+  "photo17.jpeg",
+  "photo18.jpeg",
+  "photo19.jpeg"
+];
+
+// Quiet colour fields shown when a photograph is missing or cannot load.
+// Each is [sky, horizon, ground]. Add or change tones freely.
+const FALLBACK_TONES = [
+  ["#c9c4b8", "#b8b2a4", "#7d7869"],
+  ["#d3c9bb", "#c2b4a2", "#8a7a68"],
+  ["#bfc4c2", "#a9b2b0", "#6d7876"],
+  ["#cdc7c0", "#b7aea6", "#7a716b"],
+  ["#c4c9c0", "#adb5a8", "#6f7869"],
+  ["#d0c6b8", "#bdae98", "#857660"]
+];
+
+/* ---------- 2. CONTENT: three daily moments --------------------------- */
+
+const MOMENTS = [
+  { time: "6:30 AM", hour: 6, minute: 30, title: "Begin with intention",
+    prompt: "Before the phone and the day begin: what is one thing I want to do with care today?" },
+  { time: "1:30 PM", hour: 13, minute: 30, title: "Pause and observe",
+    prompt: "Stop for one minute. What am I feeling, and what is the loudest noise around me right now?" },
+  { time: "8:30 PM", hour: 20, minute: 30, title: "Reflect and release",
+    prompt: "What did today teach me? What can I put down before I sleep?" }
+];
+
+/* ---------- 3. CONTENT: 40 quotes and questions, in fixed order ------- */
+// Each entry: [quote, author, reflection question]
+
+const DAYS = [
+  ["All of humanity's problems stem from man's inability to sit quietly in a room alone.", "Blaise Pascal, Pensées (a common paraphrase)", "What noise am I most ready to put down first?"],
+  ["Nothing is a better proof of a well-ordered mind than a man's ability to stop just where he is and pass some time in his own company.", "Seneca", "What do I reach for when I am afraid of being alone with myself?"],
+  ["I never found the companion that was so companionable as solitude.", "Henry David Thoreau, Walden", "What does silence feel like in my body today?"],
+  ["Silence is the element in which great things fashion themselves together.", "Thomas Carlyle", "Which thought keeps returning, and what is it asking of me?"],
+  ["Muddy water, let stand, becomes clear.", "Lao Tzu", "What am I pretending not to know?"],
+  ["Be patient toward all that is unsolved in your heart.", "Rainer Maria Rilke, Letters to a Young Poet", "Whose approval am I still waiting for?"],
+  ["To every thing there is a season: a time to keep silence, and a time to speak.", "Ecclesiastes 3", "When did I last feel truly unhurried, and what made it possible?"],
+  ["The unexamined life is not worth living.", "Socrates", "What would I say if no one were going to respond?"],
+  ["Knowing others is intelligence; knowing yourself is true wisdom.", "Lao Tzu, Tao Te Ching", "What am I avoiding by staying busy?"],
+  ["The soul becomes dyed with the colour of its thoughts.", "Marcus Aurelius, Meditations", "Which of my habits are choices, and which are reactions?"],
+  ["We suffer more often in imagination than in reality.", "Seneca", "What do I actually need today, as opposed to what I want?"],
+  ["Nothing can bring you peace but yourself.", "Ralph Waldo Emerson, Self-Reliance", "Where am I rushing something that needs time?"],
+  ["The greatest thing in the world is to know how to belong to oneself.", "Michel de Montaigne", "What do I feel when I am not being useful?"],
+  ["Talent develops in quiet places, character in the full current of human life.", "Johann Wolfgang von Goethe", "Which expectation of others have I mistaken for my own?"],
+  ["Look within. Within is the fountain of good.", "Marcus Aurelius, Meditations", "What small discipline would I be proud to keep for the rest of this journey?"],
+  ["First say to yourself what you would be; and then do what you have to do.", "Epictetus", "What did I react to quickly this week, and what was underneath the reaction?"],
+  ["No man is free who is not master of himself.", "Epictetus", "What is one thing I can forgive myself for today?"],
+  ["Our life is frittered away by detail. Simplify, simplify.", "Henry David Thoreau, Walden", "What does enough look like for me?"],
+  ["While we are postponing, life speeds by.", "Seneca", "What do I say yes to when I mean no?"],
+  ["Live the questions now.", "Rainer Maria Rilke, Letters to a Young Poet", "Halfway: what has become clearer, and what has become harder?"],
+  ["Life can only be understood backwards; but it must be lived forwards.", "Søren Kierkegaard", "What do I miss, and is it the thing itself or the noise around it?"],
+  ["Very little is needed to make a happy life; it is all within yourself, in your way of thinking.", "Marcus Aurelius, Meditations", "Which relationship deserves more of my honest attention?"],
+  ["Nature does not hurry, yet everything is accomplished.", "Lao Tzu", "Which fear gets smaller when I look at it directly?"],
+  ["Re-examine all you have been told.", "Walt Whitman, Leaves of Grass", "What am I learning to wait for?"],
+  ["He who has a why to live can bear almost any how.", "Friedrich Nietzsche", "What do I want my days to be mostly made of?"],
+  ["Sometimes even to live is an act of courage.", "Seneca", "Where do I give away my attention without deciding to?"],
+  ["How vain it is to sit down to write when you have not stood up to live.", "Henry David Thoreau, Journal", "What would courage look like in an ordinary hour tomorrow?"],
+  ["Waste no more time arguing about what a good man should be. Be one.", "Marcus Aurelius, Meditations", "What have I been carrying that is not mine?"],
+  ["A journey of a thousand miles begins with a single step.", "Lao Tzu", "What does my body tell me that my mind overrules?"],
+  ["Even a fool, when he holdeth his peace, is counted wise.", "Proverbs 17", "What would I do differently if I trusted myself more?"],
+  ["We are what we repeatedly do. Excellence, then, is not an act but a habit.", "Will Durant, summarising Aristotle", "What remains when I take away what others think of me?"],
+  ["If it is not right, do not do it; if it is not true, do not say it.", "Marcus Aurelius, Meditations", "Which of my values did I act on this week, and which did I only talk about?"],
+  ["He who is brave is free.", "Seneca", "Is there a conversation I need to have, with someone else or with myself?"],
+  ["Difficulties strengthen the mind, as labour does the body.", "Seneca", "What has silence taught me about listening?"],
+  ["The language of friendship is not words but meanings.", "Henry David Thoreau", "What am I grateful for that I usually rush past?"],
+  ["The heart has its reasons, which reason knows nothing of.", "Blaise Pascal, Pensées", "What do I want to keep from this journey after Day 40?"],
+  ["The mass of men lead lives of quiet desperation.", "Henry David Thoreau, Walden", "What will I protect (a time, a place, a habit) so the quiet does not disappear?"],
+  ["The future enters into us, in order to transform itself in us, long before it happens.", "Rainer Maria Rilke, Letters to a Young Poet", "What noise will I allow back in, and what will I leave out?"],
+  ["Mastering others is strength; mastering yourself is true power.", "Lao Tzu, Tao Te Ching", "What have I understood about myself that I could not hear before?"],
+  ["Begin at once to live, and count each separate day as a separate life.", "Seneca", "What was I trying to understand about myself, and what did I hear?"]
+];
+/* ---------- 4. LOGIC: you should not need to edit below this line ----- */
+
+const TOTAL_DAYS = 40;
+const DAY_MS = 86400000;
+const $ = (id) => document.getElementById(id);
+
+function startUTC() {
+  const [y, m, d] = START_DATE.split("-").map(Number);
+  return Date.UTC(y, m - 1, d);
+}
+function todayUTC() {
+  const n = new Date();
+  return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate());
+}
+// Raw journey day: below 1 = not started yet, above 40 = finished.
+function rawDay() {
+  return Math.floor((todayUTC() - startUTC()) / DAY_MS) + 1;
+}
+function dateOfDay(n) {
+  return new Date(startUTC() + (n - 1) * DAY_MS).toLocaleDateString(undefined, {
+    weekday: "long", day: "numeric", month: "long", timeZone: "UTC"
+  });
+}
+function photoForDay(n) {
+  return PHOTOS.length ? PHOTOS[(n - 1) % PHOTOS.length] : null;
+}
+function entryKey(n) { return "silence40-entry-" + n; }
+
+function safeGet(key) {
+  try { return localStorage.getItem(key) || ""; } catch (e) { return ""; }
+}
+function safeSet(key, value) {
+  try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+}
+
+let viewDay = 1;
+let saveTimer = null;
+
+function chooseViewDay() {
+  const latest = Math.min(Math.max(rawDay(), 1), TOTAL_DAYS);
+  const fromHash = parseInt(location.hash.slice(1), 10);
+  return fromHash >= 1 && fromHash <= latest ? fromHash : latest;
+}
+
+function render() {
+  const raw = rawDay();
+
+  if (raw < 1) {
+    document.body.classList.add("waiting");
+    $("waiting").textContent = "Your journey begins on " + dateOfDay(1) + ". Until then, nothing is asked of you.";
+    return;
+  }
+  document.body.classList.remove("waiting");
+
+  const latest = Math.min(raw, TOTAL_DAYS);
+  viewDay = chooseViewDay();
+  const [quote, author, question] = DAYS[viewDay - 1];
+
+  $("dayLabel").textContent = "Day " + viewDay + " of " + TOTAL_DAYS;
+  $("dateLabel").textContent = dateOfDay(viewDay) +
+    (raw > TOTAL_DAYS && viewDay === TOTAL_DAYS ? " · journey complete" : "");
+  $("progressFill").style.width = (viewDay / TOTAL_DAYS * 100) + "%";
+  $("progress").setAttribute("aria-valuenow", viewDay);
+
+  // Photograph, with graceful fallback.
+  const img = $("photo");
+  const fallback = $("photoFallback");
+  const name = photoForDay(viewDay);
+  fallback.hidden = true;
+  img.hidden = false;
+  img.alt = "Photograph for day " + viewDay;
+  img.onerror = function () {
+    img.hidden = true;
+    fallback.hidden = false;
+    const p = FALLBACK_TONES[(viewDay - 1) % FALLBACK_TONES.length];
+    fallback.style.background = "linear-gradient(180deg, " + p[0] + " 0%, " + p[1] + " 62%, " + p[2] + " 100%)";
+    fallback.textContent = "";
+  };
+  if (name) {
+    img.src = /^https?:\/\//i.test(name) ? name : encodeURI(IMAGE_FOLDER + name);
+  } else { img.onerror(); }
+
+  $("quote").textContent = quote;
+  $("author").textContent = author;
+  $("question").textContent = question;
+
+  // Back to today link
+  $("backToToday").hidden = viewDay === latest;
+
+  renderMoments(viewDay === latest);
+  renderJournal();
+  renderDays(latest);
+}
+
+function renderMoments(isToday) {
+  const now = new Date();
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  let current = -1;
+  MOMENTS.forEach((m, i) => { if (minutes >= m.hour * 60 + m.minute) current = i; });
+  const list = $("moments");
+  list.innerHTML = "";
+  MOMENTS.forEach((m, i) => {
+    const li = document.createElement("li");
+    if (isToday && i === current) { li.className = "now"; li.setAttribute("aria-current", "true"); }
+    const t = document.createElement("p");
+    t.className = "m-head";
+    t.textContent = m.time + "  " + m.title;
+    const p = document.createElement("p");
+    p.className = "m-prompt";
+    p.textContent = m.prompt;
+    li.append(t, p);
+    list.append(li);
+  });
+}
+
+function renderJournal() {
+  const box = $("journal");
+  box.value = safeGet(entryKey(viewDay));
+  $("saveStatus").textContent = "Saved only in this browser.";
+}
+
+function renderDays(latest) {
+  const grid = $("daysGrid");
+  grid.innerHTML = "";
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = n;
+    b.className = "daybtn";
+    if (n === latest) b.classList.add("today");
+    if (n === viewDay) { b.classList.add("viewing"); b.setAttribute("aria-current", "true"); }
+    if (safeGet(entryKey(n))) b.classList.add("written");
+    if (n > latest) { b.disabled = true; }
+    b.setAttribute("aria-label", "Day " + n + (n > latest ? " (not yet)" : ""));
+    b.addEventListener("click", () => {
+      if (n === latest) { history.replaceState(null, "", location.pathname + location.search); render(); }
+      else { location.hash = String(n); }
+      window.scrollTo(0, 0);
+    });
+    grid.append(b);
+  }
+}
+
+function exportEntries() {
+  let out = "40 Days of Silence: my entries\n\n";
+  for (let n = 1; n <= TOTAL_DAYS; n++) {
+    const text = safeGet(entryKey(n));
+    if (text) out += "Day " + n + " (" + dateOfDay(n) + ")\n" + text + "\n\n";
+  }
+  const blob = new Blob([out], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "40-days-of-silence-entries.txt";
+  document.body.append(a);
+  a.click();
+  a.remove();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("journal").addEventListener("input", () => {
+    clearTimeout(saveTimer);
+    $("saveStatus").textContent = "Writing…";
+    saveTimer = setTimeout(() => {
+      const ok = safeSet(entryKey(viewDay), $("journal").value);
+      $("saveStatus").textContent = ok
+        ? "Saved only in this browser."
+        : "Could not save. This browser is blocking local storage.";
+    }, 500);
+  });
+  $("backToToday").addEventListener("click", (e) => {
+    e.preventDefault();
+    history.replaceState(null, "", location.pathname + location.search);
+    render();
+    window.scrollTo(0, 0);
+  });
+  $("exportBtn").addEventListener("click", exportEntries);
+  window.addEventListener("hashchange", render);
+  render();
+});
+</script>
+</body>
+</html>
