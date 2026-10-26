@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10251e">
+  <title>40 Days of Silence</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <p class="eyebrow">A PERSONAL JOURNEY</p>
+      <h1>40 Days of <em>Silence</em></h1>
+      <p class="subtitle">Step away from the noise. Return to what matters.</p>
+    </header>
+
+    <section class="panel progress-panel">
+      <div class="between">
+        <strong id="dayLabel">DAY 1 OF 40</strong>
+        <span id="progressPercent">3%</span>
+      </div>
+      <div class="progress-track">
+        <div id="journeyProgress" class="progress-fill"></div>
+      </div>
+    </section>
+
+    <section class="panel daily-card">
+      <div class="photo-wrap">
+        <img id="dailyPhoto" alt="A peaceful landscape for reflection">
+        <div id="photoFallback" class="photo-fallback">
+          <span class="fallback-star">✦</span>
+          <strong>Make room for stillness.</strong>
+          <span>Connect to the internet to load the photograph.</span>
+        </div>
+        <a id="photoLink" class="photo-link" href="#" target="_blank"
+           rel="noopener noreferrer" hidden>Open photograph ↗</a>
+      </div>
+
+      <div class="daily-copy">
+        <p class="eyebrow gold">TODAY'S THOUGHT</p>
+        <blockquote id="dailyQuote"></blockquote>
+        <div class="rule"></div>
+        <p class="eyebrow">YOUR QUESTION FOR TODAY</p>
+        <p id="dailyQuestion" class="question"></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="eyebrow">THREE MOMENTS OF RETURN</p>
+      <div class="moments">
+        <article class="moment">
+          <span class="time">6:30 AM</span>
+          <h3>Begin quietly</h3>
+          <p>What deserves my attention today?</p>
+        </article>
+        <article class="moment">
+          <span class="time">1:30 PM</span>
+          <h3>Pause and notice</h3>
+          <p>Am I reacting automatically or choosing my response?</p>
+        </article>
+        <article class="moment">
+          <span class="time">8:30 PM</span>
+          <h3>Close with honesty</h3>
+          <p>What did I learn about myself today?</p>
+        </article>
+      </div>
+      <p class="small-note">These are reflection reminders displayed in the app, not automatic phone notifications.</p>
+    </section>
+
+    <section class="panel section journal">
+      <p class="eyebrow">MY PRIVATE JOURNAL</p>
+      <label for="journalEntry">What is on my mind today?</label>
+      <textarea id="journalEntry" rows="5"
+        placeholder="Write honestly. You do not need to impress anyone here."></textarea>
+      <div class="between journal-footer">
+        <span id="journalStatus" class="small-note">Saved on this device only.</span>
+        <button id="saveJournal" class="button secondary">Save journal</button>
+      </div>
+    </section>
+
+    <section class="panel section assessment">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow gold">HONESTY, NOT PERFECTION</p>
+          <h2>My Behaviour Today</h2>
+          <p class="muted">Score each area from 0 to 5.</p>
+        </div>
+        <div class="daily-total">
+          <span>DAILY SCORE</span>
+          <strong><span id="dailyScore">0</span><small>/30</small></strong>
+        </div>
+      </div>
+
+      <div id="scoreCategories"></div>
+
+      <div class="total-track">
+        <div id="scoreProgress" class="progress-fill"></div>
+      </div>
+      <p id="scoreMessage" class="score-message">Complete your assessment at the end of the day.</p>
+
+      <div class="scale-help">
+        <strong>How to score yourself</strong>
+        <p><b>0</b> Not practised · <b>1</b> Very difficult · <b>2</b> Inconsistent</p>
+        <p><b>3</b> Mixed results · <b>4</b> Consistent · <b>5</b> Intentional practice</p>
+      </div>
+
+      <div class="reflection-box">
+        <label for="assessmentReflection">What did I do well today, and what should I improve tomorrow?</label>
+        <textarea id="assessmentReflection" rows="4"
+          placeholder="One thing I handled well... One thing I will improve..."></textarea>
+        <div class="between journal-footer">
+          <span id="assessmentStatus" class="small-note">Not assessed yet.</span>
+          <button id="saveAssessment" class="button primary">Save assessment</button>
+        </div>
+      </div>
+
+      <button id="resetAssessment" class="button danger">Reset this day's assessment</button>
+      <p class="small-note">A low score is information, not a verdict on your worth. Speaking up when needed is part of self-control.</p>
+    </section>
+
+    <section class="panel section dashboard">
+      <p class="eyebrow gold">THE BIGGER PICTURE</p>
+      <h2>My Growth Over 40 Days</h2>
+      <p class="muted">Only days you have assessed count toward the statistics.</p>
+
+      <div class="stats-grid">
+        <article class="stat"><span>Days assessed</span><strong id="daysAssessed">0/40</strong></article>
+        <article class="stat"><span>Points earned</span><strong id="pointsEarned">0</strong></article>
+        <article class="stat"><span>Possible points</span><strong id="pointsPossible">0</strong></article>
+        <article class="stat"><span>Average score</span><strong id="averageScore">—</strong></article>
+        <article class="stat"><span>Highest day</span><strong id="highestDay">—</strong></article>
+        <article class="stat"><span>Lowest day</span><strong id="lowestDay">—</strong></article>
+      </div>
+
+      <h3 class="chart-heading">Daily scores</h3>
+      <div id="scoreChart" class="score-chart" aria-label="Chart of daily assessment scores"></div>
+      <p class="small-note">Empty bars mean no assessment has been saved for that day.</p>
+
+      <button id="exportData" class="button secondary full-button">Export my 40-day journey</button>
+    </section>
+
+    <nav class="navigation" aria-label="Day navigation">
+      <button id="previousDay" class="button secondary">← Previous</button>
+      <button id="todayButton" class="button primary">Today</button>
+      <button id="nextDay" class="button secondary">Next →</button>
+    </nav>
+
+    <footer>
+      <p>Silence is intentional, not disappearance. Keep your responsibilities, care for your people, and speak when it matters.</p>
+      <p class="small-note">Your journal and scores are stored in this browser on this device. They are not backed up to the cloud.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
