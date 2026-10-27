@@ -1,0 +1,1957 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HABARI — Daily Progress & Inner Work</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      transition: background .35s, color .35s;
+    }
+
+    .dark-mode {
+      background: #0b1220;
+      color: #f1f5f9;
+    }
+
+    .surface {
+      background: white;
+      border: 1px solid #e5eaf3;
+      transition: background .35s, border-color .35s;
+    }
+
+    .dark-mode .surface {
+      background: #151f30;
+      border-color: #29364a;
+    }
+
+    .dark-mode .muted { color: #aab8cd; }
+    .dark-mode .heading { color: #f1f5f9; }
+    .dark-mode .task-row { background: #1c293c; }
+    .dark-mode .soft-bg { background: #111c2e; }
+    .dark-mode .line { border-color: #29364a; }
+    .dark-mode .theme-icon { background: #263449; }
+    .dark-mode input,
+    .dark-mode textarea,
+    .dark-mode select { color: white; }
+
+    .dark-mode .inner-input {
+      background: #111c2e;
+      color: #f1f5f9;
+      border-color: #29364a;
+    }
+
+    .dark-mode .inspiration-card {
+      background: #1c293c;
+      border-color: #334155;
+    }
+
+    .dark-mode .inner-task {
+      background: #111c2e;
+      border-color: #29364a;
+    }
+
+    .hero-image {
+      background:
+        linear-gradient(90deg, rgba(8,20,42,.72), rgba(8,20,42,.12)),
+        url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1800&q=85")
+        center 52% / cover;
+    }
+
+    .reveal { animation: reveal .75s ease both; }
+    .delay-1 { animation-delay: .12s; }
+    .delay-2 { animation-delay: .24s; }
+    .delay-3 { animation-delay: .36s; }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes progressGlow {
+      0% { filter: brightness(1); }
+      50% { filter: brightness(1.25); }
+      100% { filter: brightness(1); }
+    }
+
+    .progress-glow { animation: progressGlow .5s ease; }
+
+    .feature-card {
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 35px rgba(37,99,235,.10);
+      border-color: #bfdbfe;
+    }
+
+    .dark-mode .feature-card:hover { border-color: #3b82f6; }
+
+    .task-done { text-decoration: line-through; opacity: .55; }
+
+    .primary-button {
+      transition: transform .2s, background .2s, box-shadow .2s;
+    }
+
+    .primary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37,99,235,.22);
+    }
+
+    .primary-button:active { transform: scale(.97); }
+
+    #toast {
+      transition: opacity .3s, transform .3s;
+    }
+
+    #toast.toast-hidden {
+      opacity: 0;
+      transform: translate(-50%, 10px);
+      pointer-events: none;
+    }
+
+    .day-history-button {
+      min-height: 43px;
+      border: 1px solid #e5eaf3;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .day-history-button:hover { border-color: #2563eb; }
+
+    .day-history-button.is-current {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .day-history-button.is-complete:not(.is-current) {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .dark-mode .day-history-button {
+      border-color: #29364a;
+      color: #e2e8f0;
+    }
+
+    .dark-mode .day-history-button.is-current {
+      background: #2563eb;
+      color: white;
+    }
+
+    .dark-mode .day-history-button.is-complete:not(.is-current) {
+      background: #163b32;
+      color: #bbf7d0;
+      border-color: #166534;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+
+  <!-- NAVIGATION -->
+  <header class="surface sticky top-0 z-20">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
+
+      <a href="#home" class="flex items-center gap-3" aria-label="HABARI home">
+        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 text-2xl text-white shadow-lg shadow-blue-200">
+          ↗
+        </span>
+        <span>
+          <span class="heading block text-xl font-extrabold tracking-tight">HABARI</span>
+          <span class="muted block text-xs text-slate-500">Your daily progress</span>
+        </span>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <a href="#innerWork" class="muted hidden text-sm font-medium hover:text-blue-600 sm:block">
+          Inner Work
+        </a>
+
+        <a href="#features" class="muted hidden text-sm font-medium hover:text-blue-600 sm:block">
+          Explore
+        </a>
+
+        <button id="themeButton"
+          class="theme-icon flex h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 hover:bg-slate-100"
+          type="button" aria-label="Switch theme">
+          <span id="themeIcon">🌙</span>
+          <span id="themeLabel" class="hidden text-sm sm:inline">Dark mode</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+
+  <main id="home" class="mx-auto max-w-7xl px-5 py-7 md:px-8 md:py-10">
+
+    <!-- HERO PHOTO -->
+    <section class="hero-image reveal relative flex min-h-[390px] items-end overflow-hidden rounded-3xl md:min-h-[440px]">
+      <div class="relative z-10 max-w-2xl p-7 text-white md:p-12">
+
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2 text-sm backdrop-blur-md">
+          <span class="h-2 w-2 rounded-full bg-green-400"></span>
+          A new day. A fresh start.
+        </span>
+
+        <h1 class="mt-6 text-4xl font-extrabold leading-tight tracking-tight md:text-6xl">
+          Small steps.<br>
+          <span class="text-blue-300">Big changes.</span>
+        </h1>
+
+        <p class="mt-5 max-w-lg text-base leading-7 text-white/85 md:text-lg">
+          You don't need to change everything today.
+          Just take one meaningful step forward.
+        </p>
+
+        <button id="startButton"
+          class="primary-button mt-7 inline-flex items-center gap-3 rounded-xl bg-blue-600 px-6 py-4 font-semibold text-white"
+          type="button">
+          Let's make progress <span aria-hidden="true">→</span>
+        </button>
+      </div>
+
+      <div class="absolute right-7 top-7 hidden rounded-2xl border border-white/25 bg-black/20 p-4 text-right text-white backdrop-blur-md md:block">
+        <p class="text-sm text-white/75">YOUR REMINDER</p>
+        <p class="mt-1 font-semibold">Progress, not perfection.</p>
+      </div>
+    </section>
+
+
+    <!-- PERSONAL WELCOME AND DATE -->
+    <section class="reveal delay-1 mt-10 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-blue-600">
+          YOUR PERSONAL SPACE
+        </p>
+        <h2 id="welcomeHeading" class="heading mt-2 text-2xl font-bold md:text-3xl">
+          Keep growing 🌱
+        </h2>
+        <p id="welcomeMessage" class="muted mt-2 text-slate-500">
+          Every little effort counts. Let's see what you can do.
+        </p>
+      </div>
+
+      <div class="surface rounded-xl px-4 py-3">
+        <p class="muted text-xs text-slate-500">TODAY</p>
+        <p id="todayDate" class="heading mt-1 font-semibold">Loading date...</p>
+      </div>
+    </section>
+
+
+    <!-- STATISTICS: EXISTING DAILY TASKS -->
+    <section class="reveal delay-1 mt-6 grid gap-4 sm:grid-cols-3">
+
+      <div class="surface feature-card rounded-2xl p-5">
+        <div class="flex items-center justify-between">
+          <span class="muted text-sm text-slate-500">Total tasks</span>
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-xl">📋</span>
+        </div>
+        <p id="totalStat" class="heading mt-4 text-3xl font-extrabold">0</p>
+        <p class="muted mt-1 text-sm text-slate-500">Goals on your list</p>
+      </div>
+
+      <div class="surface feature-card rounded-2xl p-5">
+        <div class="flex items-center justify-between">
+          <span class="muted text-sm text-slate-500">Completed</span>
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-xl">✓</span>
+        </div>
+        <p id="completedStat" class="mt-4 text-3xl font-extrabold text-green-600">0</p>
+        <p class="muted mt-1 text-sm text-slate-500">Steps you've taken</p>
+      </div>
+
+      <div class="surface feature-card rounded-2xl p-5">
+        <div class="flex items-center justify-between">
+          <span class="muted text-sm text-slate-500">Your progress</span>
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-xl">⚡</span>
+        </div>
+        <p id="percentStat" class="mt-4 text-3xl font-extrabold text-purple-600">0%</p>
+        <p class="muted mt-1 text-sm text-slate-500">One step at a time</p>
+      </div>
+    </section>
+
+
+    <!-- MAIN DASHBOARD -->
+    <section class="mt-8 grid items-start gap-6 lg:grid-cols-3">
+
+      <!-- EXISTING TASK MANAGER -->
+      <div id="taskSection" class="surface reveal delay-2 rounded-2xl p-5 md:p-7 lg:col-span-2">
+
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="heading text-xl font-bold">Today's tasks</h2>
+            <p class="muted mt-1 text-sm text-slate-500">
+              Make a plan. Take action. Celebrate progress.
+            </p>
+          </div>
+
+          <span id="taskCount" class="rounded-full bg-blue-100 px-3 py-1.5 text-sm font-semibold text-blue-700">
+            0 tasks
+          </span>
+        </div>
+
+        <div class="mt-6">
+          <div class="mb-2 flex justify-between text-sm">
+            <span class="muted text-slate-500">Daily completion</span>
+            <span id="progressLabel" class="font-semibold text-blue-600">0%</span>
+          </div>
+          <div class="h-3 overflow-hidden rounded-full bg-slate-100">
+            <div id="progressFill"
+              class="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-400 transition-all duration-700"
+              style="width: 0%">
+            </div>
+          </div>
+        </div>
+
+        <form id="taskForm" class="mt-6 flex gap-2">
+          <input id="taskInput" type="text" maxlength="120"
+            placeholder="Add something you want to do..."
+            aria-label="New task"
+            class="soft-bg min-w-0 flex-1 rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+
+          <button type="submit"
+            class="primary-button rounded-xl bg-blue-600 px-5 py-3 font-bold text-white"
+            aria-label="Add task">
+            + Add
+          </button>
+        </form>
+
+        <p id="formError" class="mt-2 hidden text-sm text-red-500" role="alert">
+          Please enter a task first.
+        </p>
+
+        <ul id="taskList" class="mt-5 space-y-3"></ul>
+
+        <div id="emptyState" class="hidden py-10 text-center">
+          <div class="text-5xl">🎉</div>
+          <h3 class="heading mt-4 text-lg font-bold">All clear!</h3>
+          <p class="muted mt-2 text-sm text-slate-500">
+            Add a new task whenever you're ready.
+          </p>
+        </div>
+
+        <div id="successMessage" class="mt-5 hidden rounded-xl bg-green-50 p-4 text-sm font-medium text-green-800">
+          🎉 Wonderful! You've completed every task.
+        </div>
+      </div>
+
+
+      <!-- MOTIVATION PANEL -->
+      <aside class="reveal delay-3 space-y-6">
+
+        <div class="surface inspiration-card rounded-2xl border border-amber-200 bg-amber-50 p-6">
+          <div class="flex items-center gap-3">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-2xl">💡</span>
+            <div>
+              <h3 class="heading font-bold">A thought for today</h3>
+              <p id="motivationLabel" class="muted text-sm text-slate-500">Day 1 · Inner Work</p>
+            </div>
+          </div>
+
+          <p id="quoteText" class="heading mt-5 text-lg font-semibold leading-7">
+            Listen to understand, not to answer.
+          </p>
+
+          <p id="quoteAuthor" class="muted mt-3 text-sm text-slate-500">
+            Today's principle
+          </p>
+
+          <a href="#innerWork"
+            class="mt-5 inline-flex rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700">
+            Explore today's lesson ↓
+          </a>
+        </div>
+
+        <div class="surface rounded-2xl p-6">
+          <span class="text-3xl">🌿</span>
+          <h3 class="heading mt-4 text-lg font-bold">Remember this</h3>
+          <p class="muted mt-2 text-sm leading-6 text-slate-500">
+            You do not need to make yourself smaller to let someone else feel important. Use your knowledge to help others grow.
+          </p>
+          <div class="line mt-5 border-t pt-4">
+            <p class="text-sm font-semibold text-blue-600">
+              Listen deeply. Serve sincerely.
+            </p>
+          </div>
+        </div>
+
+      </aside>
+    </section>
+
+
+    <!-- 40-DAY INNER WORK PROJECT -->
+    <section id="innerWork" class="mt-14 scroll-mt-24">
+
+      <div class="mb-6">
+        <p class="text-sm font-semibold uppercase tracking-widest text-blue-600">
+          YOUR PERSONAL TRANSFORMATION
+        </p>
+        <h2 class="heading mt-2 text-2xl font-bold md:text-3xl">
+          40 Days of Inner Work 🌱
+        </h2>
+        <p class="muted mt-3 max-w-3xl leading-7 text-slate-500">
+          A practical journey toward listening better, speaking thoughtfully,
+          becoming more self-aware, practising humility, and using your abilities
+          to serve others.
+        </p>
+      </div>
+
+      <!-- 40-DAY PROGRESS -->
+      <div class="surface rounded-2xl p-5 md:p-7">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="muted text-sm text-slate-500">YOUR JOURNEY</p>
+            <h3 id="iwProgressHeading" class="heading mt-1 text-xl font-bold">
+              Day 1 of 40
+            </h3>
+          </div>
+          <div class="text-right">
+            <p id="iwPercent" class="text-2xl font-extrabold text-blue-600">0%</p>
+            <p id="iwCompletedDays" class="muted text-sm text-slate-500">0 days completed</p>
+          </div>
+        </div>
+
+        <div class="mt-5 h-3 overflow-hidden rounded-full bg-slate-100">
+          <div id="iwProgressBar"
+            class="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-400 transition-all duration-700"
+            style="width: 0%">
+          </div>
+        </div>
+
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <label for="iwDaySelect" class="muted text-sm font-semibold text-slate-600">
+            Review a day
+          </label>
+          <select id="iwDaySelect"
+            class="inner-input min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-blue-500 sm:flex-none">
+          </select>
+
+          <button id="iwPrevious" type="button"
+            class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold hover:bg-slate-100">
+            ← Previous
+          </button>
+
+          <button id="iwNext" type="button"
+            class="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700">
+            Next day →
+          </button>
+        </div>
+      </div>
+
+
+      <!-- DAILY MOTIVATIONAL BACKGROUND -->
+      <article class="inspiration-card mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-6 md:p-9">
+        <div class="flex items-center gap-3">
+          <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-2xl">
+            ☀️
+          </span>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-amber-700">
+              Your motivational background
+            </p>
+            <p id="iwDayLabel" class="muted mt-1 text-sm text-slate-500">
+              DAY 1 OF 40
+            </p>
+          </div>
+        </div>
+
+        <h3 id="iwTitle" class="heading mt-5 text-2xl font-extrabold leading-tight">
+          The Discipline of Listening
+        </h3>
+
+        <p id="iwBackground" class="heading mt-4 max-w-4xl text-base leading-8">
+          Knowledge becomes more useful when we make room for other people's experiences.
+        </p>
+
+        <div class="mt-6 rounded-xl border border-amber-200 bg-white/70 p-5">
+          <p class="text-xs font-bold uppercase tracking-widest text-blue-700">
+            Lesson of the day
+          </p>
+          <h4 id="iwPrinciple" class="heading mt-2 text-xl font-bold">
+            Listen to understand, not to answer.
+          </h4>
+          <p id="iwLesson" class="muted mt-3 leading-7 text-slate-600">
+            Let people finish their thoughts. Ask questions before giving advice.
+          </p>
+        </div>
+      </article>
+
+
+      <!-- PROPOSED TASKS -->
+      <div class="surface mt-6 rounded-2xl p-5 md:p-7">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h3 class="heading text-xl font-bold">Today's proposed tasks</h3>
+            <p class="muted mt-2 text-sm leading-6 text-slate-500">
+              Practise these actions in real life. You can add your own tasks.
+            </p>
+          </div>
+          <span id="iwTaskCount"
+            class="rounded-full bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700">
+            0 of 4 completed
+          </span>
+        </div>
+
+        <div id="iwTaskList" class="mt-5 space-y-3"></div>
+
+        <form id="iwAddTaskForm" class="mt-5 flex gap-2">
+          <input id="iwCustomTask" type="text" maxlength="200"
+            placeholder="Add your own personal task..."
+            aria-label="Add your own inner work task"
+            class="inner-input min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500"
+            required>
+
+          <button type="submit"
+            class="primary-button rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white">
+            + Add
+          </button>
+        </form>
+
+        <p id="iwTaskHint" class="muted mt-3 text-xs leading-5 text-slate-500">
+          Completion is not about perfection. Record your effort honestly.
+        </p>
+      </div>
+
+
+      <!-- PERSONAL DAILY RECORD -->
+      <div class="surface mt-6 rounded-2xl p-5 md:p-7">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-widest text-blue-600">
+            YOUR PRIVATE REFLECTION
+          </p>
+          <h3 class="heading mt-2 text-xl font-bold">My daily record</h3>
+          <p class="muted mt-2 text-sm leading-6 text-slate-500">
+            Record what actually happened. This is a place for honest reflection,
+            not for judging yourself.
+          </p>
+        </div>
+
+        <div class="mt-6 grid gap-5 md:grid-cols-2">
+          <div>
+            <label for="iwIntention" class="heading mb-2 block text-sm font-semibold">
+              1. My intention today
+            </label>
+            <textarea id="iwIntention" rows="3" maxlength="2000"
+              placeholder="Today, I intend to..."
+              class="inner-input w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 outline-none focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label for="iwListening" class="heading mb-2 block text-sm font-semibold">
+              2. When did I listen well?
+            </label>
+            <textarea id="iwListening" rows="3" maxlength="2000"
+              placeholder="Describe a real conversation..."
+              class="inner-input w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 outline-none focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label for="iwChallenge" class="heading mb-2 block text-sm font-semibold">
+              3. When did an old habit appear?
+            </label>
+            <textarea id="iwChallenge" rows="3" maxlength="2000"
+              placeholder="Did I interrupt, judge, compete, or seek recognition?"
+              class="inner-input w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 outline-none focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label for="iwService" class="heading mb-2 block text-sm font-semibold">
+              4. How did I serve someone?
+            </label>
+            <textarea id="iwService" rows="3" maxlength="2000"
+              placeholder="Record one practical act of service..."
+              class="inner-input w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 outline-none focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label for="iwLearning" class="heading mb-2 block text-sm font-semibold">
+              5. What did I learn about myself?
+            </label>
+            <textarea id="iwLearning" rows="3" maxlength="2000"
+              placeholder="One lesson I want to carry forward..."
+              class="inner-input w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 outline-none focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label for="iwTomorrow" class="heading mb-2 block text-sm font-semibold">
+              6. What will I improve tomorrow?
+            </label>
+            <textarea id="iwTomorrow" rows="3" maxlength="2000"
+              placeholder="Choose one specific adjustment..."
+              class="inner-input w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 outline-none focus:border-blue-500"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button id="iwSave" type="button"
+            class="primary-button rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">
+            Save daily record
+          </button>
+
+          <button id="iwComplete" type="button"
+            class="rounded-xl border border-green-300 px-5 py-3 font-semibold text-green-700 hover:bg-green-50">
+            Mark day complete ✓
+          </button>
+        </div>
+
+        <p id="iwSaveStatus" role="status" aria-live="polite"
+          class="muted mt-4 text-sm text-slate-500">
+          Your record will be saved in this browser.
+        </p>
+      </div>
+
+
+      <!-- 40-DAY HISTORY -->
+      <div class="surface mt-6 rounded-2xl p-5 md:p-7">
+        <h3 class="heading text-xl font-bold">My journey so far</h3>
+        <p class="muted mt-2 text-sm leading-6 text-slate-500">
+          Select any day to review its lesson, tasks, and personal record.
+          Completed days are marked in green.
+        </p>
+
+        <div id="iwHistory" class="mt-5 grid grid-cols-5 gap-2 sm:grid-cols-8 md:grid-cols-10"></div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button id="iwExport" type="button"
+            class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold hover:bg-slate-100">
+            Export my records ↓
+          </button>
+
+          <button id="iwReset" type="button"
+            class="rounded-xl border border-red-200 px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50">
+            Reset 40-day project
+          </button>
+        </div>
+
+        <p class="muted mt-4 text-xs leading-5 text-slate-500">
+          Records are stored in this browser on this device. Export a backup regularly.
+          Clearing browser data may erase locally stored records.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- FEATURES -->
+    <section id="features" class="mt-14">
+      <div class="text-center">
+        <p class="text-sm font-semibold uppercase tracking-widest text-blue-600">YOUR JOURNEY</p>
+        <h2 class="heading mt-2 text-2xl font-bold md:text-3xl">Build a little better every day.</h2>
+        <p class="muted mt-3 text-slate-500">Small habits can lead to meaningful change.</p>
+      </div>
+
+      <div class="mt-7 grid gap-5 md:grid-cols-3">
+        <article class="surface feature-card rounded-2xl p-6">
+          <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-2xl">🎯</span>
+          <h3 class="heading mt-5 text-lg font-bold">Set your goals</h3>
+          <p class="muted mt-2 text-sm leading-6 text-slate-500">
+            Turn big ideas into smaller actions you can take today.
+          </p>
+        </article>
+
+        <article class="surface feature-card rounded-2xl p-6">
+          <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-2xl">📈</span>
+          <h3 class="heading mt-5 text-lg font-bold">See your progress</h3>
+          <p class="muted mt-2 text-sm leading-6 text-slate-500">
+            Watch your completed tasks and personal growth records accumulate.
+          </p>
+        </article>
+
+        <article class="surface feature-card rounded-2xl p-6">
+          <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-2xl">✨</span>
+          <h3 class="heading mt-5 text-lg font-bold">Keep showing up</h3>
+          <p class="muted mt-2 text-sm leading-6 text-slate-500">
+            You don't need a perfect day. You need a next step.
+          </p>
+        </article>
+      </div>
+    </section>
+
+
+    <footer class="muted line mt-14 border-t py-7 text-center text-sm text-slate-500">
+      <p class="font-semibold">HABARI · Daily Progress</p>
+      <p class="mt-2">Made for curious minds and small beginnings. 💙</p>
+    </footer>
+
+  </main>
+
+
+  <!-- FEEDBACK TOAST -->
+  <div id="toast"
+    class="toast-hidden fixed bottom-5 left-1/2 z-50 rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-xl"
+    role="status" aria-live="polite">
+    Nice work!
+  </div>
+
+
+  <script>
+    /* ==========================================
+       OWNER AND PERSONAL WELCOME
+       Change this name to the dashboard owner's name.
+       ========================================== */
+
+    const ownerName = "Patrick";
+
+    function updateWelcome() {
+      const hour = new Date().getHours();
+      let greeting;
+
+      if (hour >= 5 && hour < 12) {
+        greeting = "Good morning";
+      } else if (hour >= 12 && hour < 17) {
+        greeting = "Good afternoon";
+      } else if (hour >= 17 && hour < 21) {
+        greeting = "Good evening";
+      } else {
+        greeting = "Welcome back";
+      }
+
+      document.getElementById("welcomeHeading").textContent =
+        `${greeting}, ${ownerName} 🌱`;
+
+      document.getElementById("welcomeMessage").textContent =
+        "Today, listen deeply, speak thoughtfully, and use what you have to serve others.";
+    }
+
+    updateWelcome();
+
+
+    /* ==========================================
+       EXISTING HABARI DAILY TASK MANAGER
+       ========================================== */
+
+    const taskForm = document.getElementById("taskForm");
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+    const formError = document.getElementById("formError");
+
+    const progressFill = document.getElementById("progressFill");
+    const progressLabel = document.getElementById("progressLabel");
+    const totalStat = document.getElementById("totalStat");
+    const completedStat = document.getElementById("completedStat");
+    const percentStat = document.getElementById("percentStat");
+    const taskCount = document.getElementById("taskCount");
+    const emptyState = document.getElementById("emptyState");
+    const successMessage = document.getElementById("successMessage");
+
+    const themeButton = document.getElementById("themeButton");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeLabel = document.getElementById("themeLabel");
+    const toast = document.getElementById("toast");
+
+    document.getElementById("todayDate").textContent =
+      new Intl.DateTimeFormat(undefined, {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }).format(new Date());
+
+    const starterTasks = [
+      { id: 1, text: "Practise Tailwind CSS", done: false },
+      { id: 2, text: "Learn one new JavaScript idea", done: false },
+      { id: 3, text: "Work on a personal project", done: false }
+    ];
+
+    let tasks = starterTasks.map(task => ({ ...task }));
+    let toastTimer;
+
+    try {
+      const saved = localStorage.getItem("habari-progress-tasks");
+
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+
+        if (Array.isArray(parsed) && parsed.every(task =>
+          task &&
+          Number.isSafeInteger(task.id) &&
+          typeof task.text === "string" &&
+          typeof task.done === "boolean"
+        )) {
+          tasks = parsed;
+        }
+      }
+
+      if (localStorage.getItem("habari-progress-theme") === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+    } catch (error) {
+      console.warn("Browser storage is unavailable.", error);
+    }
+
+    function saveTasks() {
+      try {
+        localStorage.setItem("habari-progress-tasks", JSON.stringify(tasks));
+      } catch (error) {
+        showToast("Could not save changes in this browser.");
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.remove("toast-hidden");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add("toast-hidden");
+      }, 2400);
+    }
+
+    function renderTasks() {
+      taskList.replaceChildren();
+
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.className =
+          "task-row flex items-center gap-3 rounded-xl bg-slate-50 p-4 reveal";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.done;
+        checkbox.className = "h-5 w-5 shrink-0 accent-blue-600";
+        checkbox.setAttribute("aria-label", "Complete " + task.text);
+
+        const label = document.createElement("span");
+        label.className =
+          "min-w-0 flex-1 break-words text-sm" +
+          (task.done ? " task-done" : "");
+        label.textContent = task.text;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.textContent = "×";
+        deleteButton.className =
+          "rounded-lg px-3 py-1 text-xl text-red-500 hover:bg-red-100";
+        deleteButton.setAttribute("aria-label", "Delete " + task.text);
+
+        checkbox.addEventListener("change", () => {
+          task.done = checkbox.checked;
+          saveTasks();
+          renderTasks();
+
+          if (task.done) showToast("One more step forward! ✨");
+        });
+
+        deleteButton.addEventListener("click", () => {
+          tasks = tasks.filter(item => item.id !== task.id);
+          saveTasks();
+          renderTasks();
+          showToast("Task removed.");
+        });
+
+        li.append(checkbox, label, deleteButton);
+        taskList.appendChild(li);
+      });
+
+      emptyState.classList.toggle("hidden", tasks.length !== 0);
+      taskCount.textContent =
+        tasks.length + (tasks.length === 1 ? " task" : " tasks");
+
+      const completed = tasks.filter(task => task.done).length;
+      const percentage = tasks.length
+        ? Math.round(completed / tasks.length * 100)
+        : 0;
+
+      progressFill.style.width = percentage + "%";
+      progressLabel.textContent = percentage + "%";
+      totalStat.textContent = tasks.length;
+      completedStat.textContent = completed;
+      percentStat.textContent = percentage + "%";
+
+      successMessage.classList.toggle(
+        "hidden",
+        tasks.length === 0 || completed !== tasks.length
+      );
+
+      if (percentage === 100 && tasks.length > 0) {
+        progressFill.classList.remove("progress-glow");
+        void progressFill.offsetWidth;
+        progressFill.classList.add("progress-glow");
+      }
+    }
+
+    taskForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const text = taskInput.value.trim();
+
+      if (!text) {
+        formError.classList.remove("hidden");
+        taskInput.focus();
+        return;
+      }
+
+      formError.classList.add("hidden");
+
+      tasks.push({
+        id: Date.now(),
+        text,
+        done: false
+      });
+
+      saveTasks();
+      renderTasks();
+      taskInput.value = "";
+      taskInput.focus();
+
+      showToast("Your next step has been added.");
+    });
+
+    taskInput.addEventListener("input", () => {
+      formError.classList.add("hidden");
+    });
+
+    function updateThemeButton() {
+      const dark = document.body.classList.contains("dark-mode");
+
+      themeIcon.textContent = dark ? "☀️" : "🌙";
+      themeLabel.textContent = dark ? "Light mode" : "Dark mode";
+      themeButton.setAttribute(
+        "aria-label",
+        dark ? "Switch to light mode" : "Switch to dark mode"
+      );
+    }
+
+    themeButton.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+
+      const theme = document.body.classList.contains("dark-mode")
+        ? "dark"
+        : "light";
+
+      try {
+        localStorage.setItem("habari-progress-theme", theme);
+      } catch (error) {
+        console.warn("Could not save theme preference.");
+      }
+
+      updateThemeButton();
+      showToast(theme === "dark" ? "Dark mode enabled 🌙" : "Light mode enabled ☀️");
+    });
+
+    document.getElementById("startButton").addEventListener("click", () => {
+      document.getElementById("taskSection").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      taskInput.focus({ preventScroll: true });
+    });
+
+
+    /* ==========================================
+       40 DAYS OF INNER WORK
+       Independent from the regular task manager.
+       ========================================== */
+
+    const IW_KEY = "habari-inner-work-40-days-v1";
+
+    /*
+      Each day contains:
+      title      = daily theme
+      principle  = lesson to practise
+      background = motivational reflection
+      lesson     = practical explanation
+      tasks      = proposed real-life actions
+    */
+
+    const innerDays = [
+      {
+        title: "The Discipline of Listening",
+        principle: "Listen to understand, not to answer.",
+        background: "Knowledge is valuable, but it becomes more useful when we make room for other people's experiences. Listening is not weakness. It is the willingness to understand before judging or responding.",
+        lesson: "Let people finish their thoughts. Ask questions before giving advice. You can be knowledgeable without proving it in every conversation.",
+        tasks: [
+          "Let people finish speaking in at least three conversations.",
+          "Ask a genuine question before offering advice.",
+          "Notice one moment when you want to interrupt or impress.",
+          "Give someone your full attention without turning the conversation toward yourself."
+        ]
+      },
+      {
+        title: "The Power of the Pause",
+        principle: "Not every thought needs an immediate response.",
+        background: "A pause creates space between what happens and how you react. In that space, you can choose a response that reflects your values rather than your first impulse.",
+        lesson: "Pause briefly before responding, especially when you feel challenged, irritated, or eager to demonstrate what you know.",
+        tasks: [
+          "Pause for two seconds before answering important questions.",
+          "Notice one emotional reaction without immediately acting on it.",
+          "Reread a difficult message before sending it.",
+          "Reflect on one situation where a pause improved your response."
+        ]
+      },
+      {
+        title: "Speak with Intention",
+        principle: "Let your words serve a purpose.",
+        background: "Speaking less is not automatically wisdom. The aim is to make your words more considerate, useful, and truthful rather than simply trying to dominate a conversation.",
+        lesson: "Before speaking, ask whether your words will help, clarify, encourage, or respectfully express an important need.",
+        tasks: [
+          "Avoid interrupting to finish another person's sentence.",
+          "Remove unnecessary exaggeration from one explanation.",
+          "Give one clear answer without adding details just to impress.",
+          "Notice when silence is helpful and when speaking is necessary."
+        ]
+      },
+      {
+        title: "Observe Without Judging",
+        principle: "Notice first; conclude later.",
+        background: "Our first interpretation of another person may be incomplete. Curiosity helps us see the difference between what someone actually did and the story we created about their intentions.",
+        lesson: "Separate observable facts from assumptions. You can recognize harmful behaviour without reducing a person to a single mistake.",
+        tasks: [
+          "Catch one assumption you make about someone.",
+          "Separate facts from your interpretation.",
+          "Ask for clarification instead of assuming an intention.",
+          "Describe a problem without insulting the person."
+        ]
+      },
+      {
+        title: "Humility Without Self-Rejection",
+        principle: "I can grow without hating who I was.",
+        background: "Change does not require you to despise your former self. It requires you to take responsibility for your actions and practise better ones today.",
+        lesson: "Acknowledge mistakes honestly. Do not excuse harmful behaviour, but do not turn every mistake into a judgment of your entire identity.",
+        tasks: [
+          "Admit one thing you still need to learn.",
+          "Accept a correction without immediately defending yourself.",
+          "Recognize one strength without ranking yourself above others.",
+          "Write one lesson from a past mistake."
+        ]
+      },
+      {
+        title: "Respect Every Voice",
+        principle: "Every person deserves to be heard.",
+        background: "A person's worth is not measured by education, confidence, wealth, language ability, or social status. Respect means allowing people to contribute without making them feel inferior.",
+        lesson: "Pay attention to people who are often interrupted or overlooked. Invite their ideas without putting them on the spot.",
+        tasks: [
+          "Invite another person to share an opinion.",
+          "Do not mock someone's mistake in speech or knowledge.",
+          "Listen without checking your phone.",
+          "Thank someone for sharing a different perspective."
+        ]
+      },
+      {
+        title: "Learn Before You Teach",
+        principle: "Even a teacher remains a learner.",
+        background: "Explaining things to others can be generous, but teaching without listening can become a way to control a conversation. Real learning leaves room for correction.",
+        lesson: "Approach conversations with the possibility that another person knows something you do not.",
+        tasks: [
+          "Ask someone to teach you something they know.",
+          "Listen to an unfamiliar perspective for five minutes.",
+          "Admit when you do not know an answer.",
+          "Record one thing you learned from another person."
+        ]
+      },
+      {
+        title: "Let Others Shine",
+        principle: "Another person's success does not reduce my worth.",
+        background: "Insecurity can make us compete for recognition even when no competition exists. We can celebrate another person's contribution without needing to take the spotlight.",
+        lesson: "Practise giving sincere credit. Let others finish, present their ideas, and receive recognition for their work.",
+        tasks: [
+          "Give someone specific and sincere praise.",
+          "Credit another person's contribution when appropriate.",
+          "Resist redirecting attention to your achievements.",
+          "Notice how it feels when someone else receives recognition."
+        ]
+      },
+      {
+        title: "Receive Correction Gracefully",
+        principle: "Correction can become information, not humiliation.",
+        background: "Being corrected can feel uncomfortable, especially when we value competence. Discomfort does not mean the correction is unfair or that our dignity is under attack.",
+        lesson: "Listen first. Ask for an example if needed. Consider feedback carefully without accepting every criticism as true.",
+        tasks: [
+          "Listen to feedback without interrupting.",
+          "Ask one clarifying question about a correction.",
+          "Identify any useful part of feedback you receive.",
+          "Thank someone for constructive feedback when appropriate."
+        ]
+      },
+      {
+        title: "The Freedom of Not Proving Yourself",
+        principle: "My worth does not depend on winning every conversation.",
+        background: "The need to prove ourselves can turn ordinary conversations into competitions. Inner confidence allows us to contribute without needing to win.",
+        lesson: "Choose understanding over the last word when the issue does not require a firm boundary or factual correction.",
+        tasks: [
+          "Let a harmless disagreement remain unresolved.",
+          "Avoid listing achievements to establish importance.",
+          "Notice when you want the last word.",
+          "Choose understanding over winning in one conversation."
+        ]
+      },
+      {
+        title: "Patience with People",
+        principle: "Give people room to learn at their own pace.",
+        background: "We all have different starting points, experiences, and learning speeds. Patience does not mean lowering standards; it means helping without humiliating.",
+        lesson: "Explain clearly, check understanding, and allow people to make mistakes while learning.",
+        tasks: [
+          "Explain something patiently without showing irritation.",
+          "Let a learner attempt a task before taking over.",
+          "Avoid comparing someone's progress with another's.",
+          "Encourage someone by naming a real effort or improvement."
+        ]
+      },
+      {
+        title: "Honesty with Yourself",
+        principle: "Growth begins where excuses end.",
+        background: "It is difficult to change a habit we refuse to acknowledge. Honest reflection is not an invitation to shame yourself; it is a way to identify what needs practice.",
+        lesson: "Describe your actions accurately. Replace broad self-condemnation with a specific account of what happened.",
+        tasks: [
+          "Name one behaviour you want to change.",
+          "Identify one excuse you sometimes use.",
+          "Describe the impact of one action fairly.",
+          "Choose one practical correction for tomorrow."
+        ]
+      },
+      {
+        title: "Control the Urge to Interrupt",
+        principle: "Let the other person's thought reach its end.",
+        background: "Interrupting can happen through excitement, impatience, or the belief that our thought is more important. Practising restraint helps other people finish what they are trying to express.",
+        lesson: "If an important thought comes to mind, remember it briefly and wait. Interrupt when necessary for safety or urgent clarification.",
+        tasks: [
+          "Wait until a speaker finishes before replying.",
+          "Notice why you interrupt when it happens.",
+          "Ask a follow-up question about what you heard.",
+          "Reflect on what interruption may have caused you to miss."
+        ]
+      },
+      {
+        title: "Ask Better Questions",
+        principle: "Curiosity opens doors that certainty can close.",
+        background: "Good questions help us understand experiences beyond our own. They show interest without requiring us to agree with every opinion.",
+        lesson: "Ask questions that invite explanation rather than questions designed to expose, embarrass, or defeat someone.",
+        tasks: [
+          "Ask someone what they think before giving your view.",
+          "Use the question, 'Can you help me understand?'",
+          "Ask a follow-up question based on what you heard.",
+          "Avoid questions designed only to prove someone wrong."
+        ]
+      },
+      {
+        title: "Practise Quiet Confidence",
+        principle: "Confidence does not need an audience.",
+        background: "You can work seriously toward your goals without constantly announcing your progress. Quiet confidence focuses on consistent effort rather than the appearance of success.",
+        lesson: "Let your work, reliability, and conduct speak over time. Share achievements when useful, but do not make every interaction a performance.",
+        tasks: [
+          "Complete one important task without announcing it.",
+          "Avoid exaggerating a skill or achievement.",
+          "Keep one promise you made to yourself.",
+          "Record evidence of effort rather than praise received."
+        ]
+      },
+      {
+        title: "Serve Without Display",
+        principle: "Help because it matters, not because it earns applause.",
+        background: "Service is not about appearing selfless. It is about responding to a real need while respecting the other person's choice and dignity.",
+        lesson: "Ask whether help is wanted. Offer practical support without creating a sense of debt or superiority.",
+        tasks: [
+          "Offer one practical act of help.",
+          "Ask before taking over someone else's task.",
+          "Avoid using a favour to gain influence.",
+          "Reflect on whether your help respected independence."
+        ]
+      },
+      {
+        title: "Make Space for Disagreement",
+        principle: "Respect does not require agreement.",
+        background: "A disagreement does not have to become a contest of intelligence or character. We can challenge ideas clearly while preserving the dignity of the person expressing them.",
+        lesson: "Focus on the issue, explain your reasons, and remain open to evidence that could change your view.",
+        tasks: [
+          "Listen to a different opinion without ridicule.",
+          "Explain one disagreement calmly and specifically.",
+          "Ask what shaped the other person's view.",
+          "Admit one point where the other person may be right."
+        ]
+      },
+      {
+        title: "Notice Your Triggers",
+        principle: "Self-awareness gives you more choices.",
+        background: "Certain situations may trigger defensiveness, pride, impatience, or a need for approval. Recognizing a pattern gives you a chance to respond differently.",
+        lesson: "Look for the event, the emotion, the impulse, and the action. Understand the pattern rather than punishing yourself for having feelings.",
+        tasks: [
+          "Notice one moment of defensiveness or irritation.",
+          "Name the feeling without judging it.",
+          "Identify what triggered the feeling.",
+          "Choose a calmer response to practise next time."
+        ]
+      },
+      {
+        title: "Be Reliable",
+        principle: "Character is built through repeated actions.",
+        background: "Grand intentions matter less than the small commitments we keep. Reliability builds trust because people can depend on our actions, not only our words.",
+        lesson: "Make realistic promises, communicate when plans change, and finish what you reasonably commit to doing.",
+        tasks: [
+          "Complete one task you have been postponing.",
+          "Keep a small promise you made to someone.",
+          "Communicate honestly if you cannot meet a commitment.",
+          "Review whether your schedule reflects your priorities."
+        ]
+      },
+      {
+        title: "Respect Boundaries",
+        principle: "Kindness respects another person's choice.",
+        background: "Helping someone does not give us ownership over their decisions. Healthy service respects privacy, consent, and the freedom to decline assistance.",
+        lesson: "Offer support without forcing it. Respect a person's time, personal space, and right to make their own decisions.",
+        tasks: [
+          "Ask before giving advice on a personal matter.",
+          "Respect someone's decision even if you disagree.",
+          "Protect another person's private information.",
+          "Notice whether your help leaves the person with more choice."
+        ]
+      },
+      {
+        title: "Practise Gratitude",
+        principle: "Recognize contributions beyond your own.",
+        background: "No one develops entirely alone. Teachers, friends, colleagues, family members, and strangers often contribute to our progress in ways we overlook.",
+        lesson: "Gratitude does not deny your own effort. It recognizes that growth also depends on opportunities and support from others.",
+        tasks: [
+          "Thank someone for a specific contribution.",
+          "Name three things you learned from other people.",
+          "Acknowledge help you previously took for granted.",
+          "Notice one ordinary opportunity you can use well today."
+        ]
+      },
+      {
+        title: "Choose Words That Build",
+        principle: "Be truthful without being cruel.",
+        background: "Honesty and kindness can work together. We do not need to humiliate people to correct a mistake or pretend a problem does not exist to protect their feelings.",
+        lesson: "Address behaviour or ideas specifically. Avoid insults, hurtful sarcasm, and public correction when a private conversation would be better.",
+        tasks: [
+          "Give one piece of feedback respectfully.",
+          "Avoid gossip about someone who is not present.",
+          "Replace one harsh judgment with a factual description.",
+          "Encourage someone using a specific observation."
+        ]
+      },
+      {
+        title: "Manage Your Need for Recognition",
+        principle: "Do good work even when nobody applauds.",
+        background: "Wanting appreciation is human. The challenge is not to eliminate that desire but to prevent it from controlling every decision or relationship.",
+        lesson: "Notice when praise becomes the main reason for an action. Return your attention to the value of the action itself.",
+        tasks: [
+          "Do one useful thing without announcing it.",
+          "Notice how you feel when effort goes unrecognized.",
+          "Avoid fishing for compliments.",
+          "Identify one reason your work matters beyond praise."
+        ]
+      },
+      {
+        title: "Learn from Everyone",
+        principle: "Wisdom can come from unexpected places.",
+        background: "Experience, insight, and practical knowledge are not limited to people with formal qualifications or high status. Remain open to learning from different backgrounds.",
+        lesson: "Respect a person's experience while still thinking critically about the information they share.",
+        tasks: [
+          "Learn something from a person you rarely consult.",
+          "Ask how someone developed a skill.",
+          "Avoid dismissing an idea based only on who expressed it.",
+          "Record one useful insight from today's conversations."
+        ]
+      },
+      {
+        title: "Take Responsibility",
+        principle: "Own your part before blaming others.",
+        background: "Taking responsibility does not mean accepting blame for everything. It means identifying the part you can honestly own and the action you can take next.",
+        lesson: "Separate your choices from circumstances outside your control. Focus on a realistic correction rather than defending your image.",
+        tasks: [
+          "Acknowledge one mistake without making excuses.",
+          "Apologize if your actions hurt someone and an apology is appropriate.",
+          "Identify one part of a problem you can influence.",
+          "Take one concrete corrective action."
+        ]
+      },
+      {
+        title: "Apologize with Integrity",
+        principle: "A real apology makes room for repair.",
+        background: "An apology is not a performance or a demand for immediate forgiveness. It is an honest recognition of harm and a commitment to behave differently.",
+        lesson: "Name what you did, acknowledge its impact, and explain what you will change. Do not use an apology to pressure someone to move on.",
+        tasks: [
+          "Reflect on one situation where an apology may be needed.",
+          "Offer a specific, sincere apology if appropriate.",
+          "Listen without demanding immediate forgiveness.",
+          "Choose one behaviour that would demonstrate change."
+        ]
+      },
+      {
+        title: "Be Patient with Your Growth",
+        principle: "Consistency matters more than perfection.",
+        background: "Old habits may return under stress. One difficult moment does not erase your progress, but it can show you where further practice is needed.",
+        lesson: "Measure growth by how often you notice a habit, repair its effects, and choose a better response—not by never making mistakes.",
+        tasks: [
+          "Identify one improvement from the previous days.",
+          "Notice a setback without insulting yourself.",
+          "Repeat one practice that has helped you.",
+          "Set a realistic intention for tomorrow."
+        ]
+      },
+      {
+        title: "Speak with Courage",
+        principle: "Humility does not mean making yourself invisible.",
+        background: "Silence can be thoughtful, but it can also become avoidance. You still have a responsibility to express your needs, share useful knowledge, and speak up when something important is wrong.",
+        lesson: "Practise clear, respectful speech. The aim is neither domination nor self-erasure; it is honest participation.",
+        tasks: [
+          "Share a useful idea without trying to impress.",
+          "Express one need or boundary respectfully.",
+          "Speak up against unfair treatment when safe.",
+          "Notice the difference between thoughtful silence and fear."
+        ]
+      },
+      {
+        title: "Celebrate Others Sincerely",
+        principle: "Another person's light can inspire your own.",
+        background: "Comparison can make other people's achievements feel threatening. Sincere appreciation helps us see success as something to learn from rather than something to compete against.",
+        lesson: "Celebrate genuine effort and progress. Learn from another person's success without copying their path or diminishing your own.",
+        tasks: [
+          "Congratulate someone on a real achievement.",
+          "Ask what helped them succeed.",
+          "Avoid comparing your progress unnecessarily.",
+          "Write down how their success can inspire your growth."
+        ]
+      },
+      {
+        title: "Practise Emotional Restraint",
+        principle: "Feelings deserve attention; they do not need to dictate every action.",
+        background: "Anger, embarrassment, jealousy, and excitement are part of being human. Emotional maturity means recognizing a feeling and choosing a response that fits your values.",
+        lesson: "When emotions rise, slow down. If necessary, take a respectful break before continuing a difficult conversation.",
+        tasks: [
+          "Name one strong emotion you experience today.",
+          "Pause before responding to a frustrating moment.",
+          "Take a brief break if a conversation becomes heated.",
+          "Review what helped you respond constructively."
+        ]
+      },
+      {
+        title: "Give Credit Fairly",
+        principle: "Acknowledge the people who helped make progress possible.",
+        background: "Pride can lead us to present shared achievements as individual accomplishments. Fair credit builds trust and shows that we value collaboration.",
+        lesson: "Be specific about who contributed what. Acknowledging others does not erase your own contribution.",
+        tasks: [
+          "Acknowledge a person's contribution to shared work.",
+          "Be accurate about what you did and did not do.",
+          "Ask a collaborator what support they need.",
+          "Reflect on how fair recognition affects a team."
+        ]
+      },
+      {
+        title: "Use Your Knowledge to Empower",
+        principle: "Help people become more capable, not more dependent.",
+        background: "The best use of knowledge is not always to provide the answer. Sometimes it is to help someone develop the confidence and skills to find the answer themselves.",
+        lesson: "Guide rather than take over. Explain your reasoning, invite questions, and allow the learner to practise independently.",
+        tasks: [
+          "Help someone learn a skill instead of doing everything for them.",
+          "Ask what the learner already understands.",
+          "Give feedback without humiliation.",
+          "Let the person attempt the task independently."
+        ]
+      },
+      {
+        title: "Practise Fairness",
+        principle: "Apply your standards consistently, including to yourself.",
+        background: "It is easy to excuse our own mistakes while judging similar mistakes in others. Fairness asks us to consider context and apply reasonable standards consistently.",
+        lesson: "Look at actions and evidence rather than status, friendship, or personal preference. Fairness does not require ignoring genuine differences in circumstances.",
+        tasks: [
+          "Notice a double standard in your own thinking.",
+          "Consider someone's circumstances before judging.",
+          "Use respectful language with everyone.",
+          "Correct one unfair assumption if you discover it."
+        ]
+      },
+      {
+        title: "Choose Presence over Performance",
+        principle: "Be present with people instead of managing their opinion of you.",
+        background: "When we constantly wonder how others see us, we can stop paying attention to what is happening. Presence brings us back to the actual conversation and the person in front of us.",
+        lesson: "You do not have to manage every impression. Focus on being attentive, honest, and considerate rather than trying to look transformed.",
+        tasks: [
+          "Have one conversation without planning how to appear impressive.",
+          "Put away distractions while someone speaks.",
+          "Notice when you worry about how you are perceived.",
+          "Return your attention to the person or task in front of you."
+        ]
+      },
+      {
+        title: "Make Time for Reflection",
+        principle: "Review your actions so tomorrow can be wiser.",
+        background: "Without reflection, days can pass without revealing what we are learning. A short, honest review can turn an ordinary experience into a practical lesson.",
+        lesson: "Record what happened, what you felt, what you did, and what you want to try next time. Keep the record specific and fair.",
+        tasks: [
+          "Spend five minutes reviewing your day.",
+          "Record one moment of progress.",
+          "Record one moment that needs improvement.",
+          "Choose a single practice for tomorrow."
+        ]
+      },
+      {
+        title: "Build Habits of Service",
+        principle: "Make contribution part of ordinary life.",
+        background: "Service does not need to be dramatic. Small, dependable actions—sharing knowledge, helping a neighbour, encouraging a learner, or keeping a promise—can make a real difference.",
+        lesson: "Choose help that fits the person's actual needs and respects their agency. Sustainable service also respects your own limits.",
+        tasks: [
+          "Identify one genuine need in your community or circle.",
+          "Offer a practical and realistic form of help.",
+          "Ask whether your help was useful.",
+          "Consider how to make the contribution sustainable."
+        ]
+      },
+      {
+        title: "Strengthen Your Boundaries",
+        principle: "Respect for others includes respect for yourself.",
+        background: "Humility is not agreeing to everything or allowing people to mistreat you. Healthy boundaries make respectful relationships more possible.",
+        lesson: "Say no clearly when necessary. Protect your time and responsibilities without belittling or punishing others.",
+        tasks: [
+          "Identify one responsibility or limit that matters to you.",
+          "Communicate one boundary respectfully if needed.",
+          "Respect another person's reasonable boundary.",
+          "Notice where you confuse kindness with pleasing everyone."
+        ]
+      },
+      {
+        title: "Review Your Relationships",
+        principle: "Ask how people experience your presence.",
+        background: "We cannot control every person's opinion, but we can reflect on the effect of our behaviour. Trust grows when people repeatedly experience respect, honesty, and reliability.",
+        lesson: "Consider whether people have room to speak, disagree, and make mistakes around you. Where appropriate, invite honest feedback without demanding reassurance.",
+        tasks: [
+          "Review one recent interaction honestly.",
+          "Notice whether you listened or dominated.",
+          "Ask a trusted person for specific feedback if appropriate.",
+          "Choose one relationship habit to improve."
+        ]
+      },
+      {
+        title: "Recognize Your Progress",
+        principle: "Measure change by behaviour, not by appearance.",
+        background: "A transformation is not proven by feeling different or receiving compliments. Look at the small choices you now make more consistently, especially when nobody is watching.",
+        lesson: "Compare your current responses with your earlier patterns. Celebrate real progress while remaining honest about unfinished work.",
+        tasks: [
+          "Review your saved reflections from earlier days.",
+          "Identify two habits that have improved.",
+          "Identify one habit that still needs work.",
+          "Choose a practice to continue after this project."
+        ]
+      },
+      {
+        title: "Prepare to Continue",
+        principle: "Forty days can begin a practice that lasts much longer.",
+        background: "The purpose of a 40-day project is not to finish and declare yourself transformed. It is to establish a direction and learn how to keep returning to it.",
+        lesson: "Choose a small set of practices that you can sustain. Real change continues through ordinary conversations, difficult moments, and repeated decisions.",
+        tasks: [
+          "Choose three practices you want to keep.",
+          "Write down what has changed and what has not.",
+          "Identify a realistic daily reflection routine.",
+          "Set one intention for the next 30 days."
+        ]
+      }
+    ];
+
+    let iwState = {
+      currentDay: 1,
+      records: {}
+    };
+
+    let iwAutosaveTimer = null;
+
+    function iwLoadState() {
+      try {
+        const saved = localStorage.getItem(IW_KEY);
+        if (!saved) return;
+
+        const parsed = JSON.parse(saved);
+
+        if (!parsed || typeof parsed !== "object") return;
+
+        iwState.currentDay = Math.min(
+          40,
+          Math.max(1, Number(parsed.currentDay) || 1)
+        );
+
+        iwState.records =
+          parsed.records && typeof parsed.records === "object"
+            ? parsed.records
+            : {};
+      } catch (error) {
+        console.warn("Could not load Inner Work records.", error);
+      }
+    }
+
+    function iwSaveState() {
+      try {
+        localStorage.setItem(IW_KEY, JSON.stringify(iwState));
+        return true;
+      } catch (error) {
+        console.error("Could not save Inner Work records.", error);
+        const status = document.getElementById("iwSaveStatus");
+
+        if (status) {
+          status.textContent =
+            "Saving failed. Export or copy your reflections before leaving this page.";
+        }
+
+        return false;
+      }
+    }
+
+    function iwGetRecord(day = iwState.currentDay) {
+      const key = String(day);
+      const info = innerDays[day - 1];
+
+      if (!iwState.records[key]) {
+        iwState.records[key] = {
+          tasks: info.tasks.map((text, index) => ({
+            id: "default-" + index,
+            text
+          })),
+          completedTasks: [],
+          intention: "",
+          listening: "",
+          challenge: "",
+          service: "",
+          learning: "",
+          tomorrow: "",
+          complete: false,
+          updatedAt: ""
+        };
+      }
+
+      const record = iwState.records[key];
+
+      if (!Array.isArray(record.tasks)) record.tasks = [];
+      if (!Array.isArray(record.completedTasks)) record.completedTasks = [];
+
+      return record;
+    }
+
+    function iwCollectFields() {
+      const record = iwGetRecord();
+
+      const fields = {
+        iwIntention: "intention",
+        iwListening: "listening",
+        iwChallenge: "challenge",
+        iwService: "service",
+        iwLearning: "learning",
+        iwTomorrow: "tomorrow"
+      };
+
+      Object.entries(fields).forEach(([elementId, property]) => {
+        const element = document.getElementById(elementId);
+        if (element) record[property] = element.value;
+      });
+
+      record.updatedAt = new Date().toISOString();
+    }
+
+    function iwRenderFields() {
+      const record = iwGetRecord();
+
+      const fields = {
+        iwIntention: "intention",
+        iwListening: "listening",
+        iwChallenge: "challenge",
+        iwService: "service",
+        iwLearning: "learning",
+        iwTomorrow: "tomorrow"
+      };
+
+      Object.entries(fields).forEach(([elementId, property]) => {
+        const element = document.getElementById(elementId);
+
+        // Avoid duplicating listeners when switching between days.
+        if (element.dataset.iwBound !== "true") {
+          element.dataset.iwBound = "true";
+
+          element.addEventListener("input", () => {
+            const current = iwGetRecord();
+            current[property] = element.value;
+            current.updatedAt = new Date().toISOString();
+
+            clearTimeout(iwAutosaveTimer);
+
+            iwAutosaveTimer = setTimeout(() => {
+              if (iwSaveState()) iwRenderHistory();
+            }, 350);
+          });
+        }
+
+        element.value = record[property] || "";
+      });
+    }
+
+    function iwRenderTasks() {
+      const record = iwGetRecord();
+      const list = document.getElementById("iwTaskList");
+      list.replaceChildren();
+
+      record.tasks.forEach(task => {
+        const row = document.createElement("label");
+        row.className =
+          "inner-task flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = record.completedTasks.includes(task.id);
+        checkbox.className = "mt-1 h-4 w-4 shrink-0 accent-blue-600";
+        checkbox.setAttribute("aria-label", task.text);
+
+        const text = document.createElement("span");
+        text.className =
+          "min-w-0 flex-1 text-sm leading-6" +
+          (checkbox.checked ? " task-done" : "");
+        text.textContent = task.text;
+
+        checkbox.addEventListener("change", () => {
+          const current = iwGetRecord();
+
+          if (checkbox.checked) {
+            if (!current.completedTasks.includes(task.id)) {
+              current.completedTasks.push(task.id);
+            }
+          } else {
+            current.completedTasks = current.completedTasks.filter(
+              id => id !== task.id
+            );
+          }
+
+          current.updatedAt = new Date().toISOString();
+
+          if (iwSaveState()) {
+            iwRenderTasks();
+            iwRenderHistory();
+            iwUpdateProgress();
+          }
+        });
+
+        row.append(checkbox, text);
+        list.appendChild(row);
+      });
+
+      const done = record.tasks.filter(task =>
+        record.completedTasks.includes(task.id)
+      ).length;
+
+      document.getElementById("iwTaskCount").textContent =
+        `${done} of ${record.tasks.length} completed`;
+    }
+
+    function iwRenderHistory() {
+      const history = document.getElementById("iwHistory");
+      history.replaceChildren();
+
+      for (let day = 1; day <= 40; day++) {
+        const record = iwState.records[String(day)];
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "day-history-button";
+        button.textContent = String(day);
+        button.setAttribute("aria-label", `Review day ${day}`);
+
+        if (day === iwState.currentDay) {
+          button.classList.add("is-current");
+        } else if (record && record.complete) {
+          button.classList.add("is-complete");
+          button.textContent = "✓ " + day;
+        }
+
+        button.addEventListener("click", () => iwGoToDay(day));
+        history.appendChild(button);
+      }
+    }
+
+    function iwUpdateProgress() {
+      const completedDays = Object.values(iwState.records)
+        .filter(record => record && record.complete).length;
+
+      const percentage = Math.round(completedDays / 40 * 100);
+
+      document.getElementById("iwProgressHeading").textContent =
+        `Day ${iwState.currentDay} of 40`;
+
+      document.getElementById("iwDayLabel").textContent =
+        `DAY ${iwState.currentDay} OF 40`;
+
+      document.getElementById("iwPercent").textContent =
+        percentage + "%";
+
+      document.getElementById("iwCompletedDays").textContent =
+        `${completedDays} of 40 days completed`;
+
+      document.getElementById("iwProgressBar").style.width =
+        percentage + "%";
+    }
+
+    function iwRenderDay() {
+      const day = iwState.currentDay;
+      const info = innerDays[day - 1];
+      const record = iwGetRecord(day);
+
+      document.getElementById("iwDaySelect").value = String(day);
+
+      document.getElementById("iwTitle").textContent = info.title;
+      document.getElementById("iwBackground").textContent = info.background;
+      document.getElementById("iwPrinciple").textContent = info.principle;
+      document.getElementById("iwLesson").textContent = info.lesson;
+
+      document.getElementById("motivationLabel").textContent =
+        `Day ${day} · Inner Work`;
+
+      document.getElementById("quoteText").textContent =
+        '"' + info.principle + '"';
+
+      document.getElementById("quoteAuthor").textContent =
+        "Today's principle";
+
+      document.getElementById("iwPrevious").disabled = day === 1;
+      document.getElementById("iwNext").disabled = day === 40;
+
+      document.getElementById("iwPrevious").style.opacity =
+        day === 1 ? ".45" : "1";
+
+      document.getElementById("iwNext").style.opacity =
+        day === 40 ? ".45" : "1";
+
+      document.getElementById("iwComplete").textContent =
+        record.complete ? "✓ Day completed" : "Mark day complete ✓";
+
+      iwRenderTasks();
+      iwRenderFields();
+      iwRenderHistory();
+      iwUpdateProgress();
+
+      document.getElementById("iwSaveStatus").textContent =
+        record.complete
+          ? "This day is marked complete. You can still update your record."
+          : "Your reflections save automatically in this browser.";
+    }
+
+    function iwGoToDay(day) {
+      if (!Number.isInteger(day) || day < 1 || day > 40) return;
+
+      iwCollectFields();
+      iwSaveState();
+
+      iwState.currentDay = day;
+      iwSaveState();
+      iwRenderDay();
+
+      document.getElementById("innerWork").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function iwSaveCurrentRecord() {
+      iwCollectFields();
+
+      if (iwSaveState()) {
+        document.getElementById("iwSaveStatus").textContent =
+          `Day ${iwState.currentDay} saved successfully.`;
+        showToast("Your personal record has been saved.");
+      }
+
+      iwRenderHistory();
+    }
+
+    function iwMarkComplete() {
+      iwCollectFields();
+
+      const record = iwGetRecord();
+
+      const allTasksComplete =
+        record.tasks.length > 0 &&
+        record.tasks.every(task =>
+          record.completedTasks.includes(task.id)
+        );
+
+      if (!record.complete && !allTasksComplete) {
+        const proceed = confirm(
+          "Some tasks are still unchecked. You can still mark this day complete if you have honestly reflected on your effort. Mark it complete?"
+        );
+
+        if (!proceed) return;
+      }
+
+      record.complete = !record.complete;
+      record.updatedAt = new Date().toISOString();
+
+      if (iwSaveState()) {
+        document.getElementById("iwSaveStatus").textContent =
+          record.complete
+            ? `Day ${iwState.currentDay} marked complete. Keep practising tomorrow.`
+            : `Day ${iwState.currentDay} reopened for further practice.`;
+
+        showToast(
+          record.complete ? "A day of growth recorded 🌱" : "Day reopened."
+        );
+      }
+
+      iwRenderDay();
+    }
+
+    function iwAddCustomTask(event) {
+      event.preventDefault();
+
+      const input = document.getElementById("iwCustomTask");
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      const record = iwGetRecord();
+
+      record.tasks.push({
+        id: "custom-" + Date.now() + "-" +
+          Math.random().toString(36).slice(2, 8),
+        text
+      });
+
+      // Adding a new task means this day needs to be reviewed again.
+      record.complete = false;
+      record.updatedAt = new Date().toISOString();
+
+      input.value = "";
+
+      if (iwSaveState()) {
+        iwRenderDay();
+        showToast("Your personal task has been added.");
+      }
+    }
+
+    function iwBuildDaySelector() {
+      const select = document.getElementById("iwDaySelect");
+      select.replaceChildren();
+
+      innerDays.forEach((info, index) => {
+        const option = document.createElement("option");
+        option.value = String(index + 1);
+        option.textContent = `Day ${index + 1} — ${info.title}`;
+        select.appendChild(option);
+      });
+    }
+
+    function iwExportRecords() {
+      iwCollectFields();
+
+      if (!iwSaveState()) return;
+
+      const backup = {
+        project: "HABARI — 40 Days of Inner Work",
+        exportedAt: new Date().toISOString(),
+        currentDay: iwState.currentDay,
+        records: iwState.records
+      };
+
+      const blob = new Blob(
+        [JSON.stringify(backup, null, 2)],
+        { type: "application/json" }
+      );
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "habari-inner-work-40-days.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      document.getElementById("iwSaveStatus").textContent =
+        "Your backup file has been downloaded or prepared by the browser.";
+
+      showToast("Your records are ready to back up.");
+    }
+
+    function iwResetProject() {
+      const confirmed = confirm(
+        "This will erase all saved Inner Work reflections and task records in this browser. Export a backup first if you want to keep them. Continue?"
+      );
+
+      if (!confirmed) return;
+
+      try {
+        localStorage.removeItem(IW_KEY);
+      } catch (error) {
+        console.warn("Could not clear Inner Work records.", error);
+      }
+
+      iwState = {
+        currentDay: 1,
+        records: {}
+      };
+
+      iwSaveState();
+      iwRenderDay();
+
+      document.getElementById("iwSaveStatus").textContent =
+        "The 40-day project has been reset.";
+
+      showToast("Inner Work records reset.");
+    }
+
+    function iwInitialize() {
+      iwLoadState();
+      iwBuildDaySelector();
+      iwRenderDay();
+
+      document.getElementById("iwPrevious").addEventListener("click", () => {
+        iwGoToDay(iwState.currentDay - 1);
+      });
+
+      document.getElementById("iwNext").addEventListener("click", () => {
+        iwGoToDay(iwState.currentDay + 1);
+      });
+
+      document.getElementById("iwDaySelect").addEventListener("change", event => {
+        iwGoToDay(Number(event.target.value));
+      });
+
+      document.getElementById("iwSave").addEventListener("click", () => {
+        iwSaveCurrentRecord();
+      });
+
+      document.getElementById("iwComplete").addEventListener("click", () => {
+        iwMarkComplete();
+      });
+
+      document.getElementById("iwAddTaskForm").addEventListener(
+        "submit",
+        iwAddCustomTask
+      );
+
+      document.getElementById("iwExport").addEventListener("click", () => {
+        iwExportRecords();
+      });
+
+      document.getElementById("iwReset").addEventListener("click", () => {
+        iwResetProject();
+      });
+    }
+
+
+    /* Initialize the Inner Work project. */
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", iwInitialize);
+    } else {
+      iwInitialize();
+    }
+
+    updateThemeButton();
+    renderTasks();
+  </script>
+
+</body>
+</html>
